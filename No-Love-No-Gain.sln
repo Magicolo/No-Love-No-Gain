@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "No-Love-No-Gain.CSharp", "No-Love-No-Gain.CSharp.csproj", "{CC2F30AC-9777-9D39-D1CF-54A3957C532B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "No-Love-No-Gain.CSharp.Editor", "No-Love-No-Gain.CSharp.Editor.csproj", "{179DD927-5A6A-519F-A61D-F361C9BA0DA7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CC2F30AC-9777-9D39-D1CF-54A3957C532B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC2F30AC-9777-9D39-D1CF-54A3957C532B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC2F30AC-9777-9D39-D1CF-54A3957C532B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC2F30AC-9777-9D39-D1CF-54A3957C532B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{179DD927-5A6A-519F-A61D-F361C9BA0DA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{179DD927-5A6A-519F-A61D-F361C9BA0DA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{179DD927-5A6A-519F-A61D-F361C9BA0DA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{179DD927-5A6A-519F-A61D-F361C9BA0DA7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
