@@ -1,3 +1,4 @@
+.vs/
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
@@ -14,30 +15,3 @@
 /Project/*.userprefs
 /Project/*.pidb
 /Project/*.booproj
-
-#Unity3D Generated File On Crash Reports
-sysinfo.txt
-/Project/Assets/Assembly-CSharp-Editor.pidb
-/Project/Assets/Assembly-CSharp-Editor.pidb.meta
-/Project/Assets/Assembly-CSharp-firstpass.pidb
-/Project/Assets/Assembly-CSharp-firstpass.pidb.meta
-/Project/Assets/Assembly-UnityScript-firstpass.pidb
-/Project/Assets/Assembly-UnityScript-firstpass.pidb.meta
-/Project/Project/Assembly-CSharp-Editor-vs.csproj
-/Project/Assembly-CSharp-vs.csproj
-/Project/Project/Project.sln
-/Project/Project/Project-csharp.sln
-/Project/Project/Assembly-CSharp.csproj
-/Project/Project/Assembly-CSharp-Editor.csproj
-/Project/Project/Assets/Assembly-CSharp-Editor.pidb
-/Project/Project/Assets/Assembly-CSharp-Editor.pidb.meta
-/Project/Project/Assets/Assembly-CSharp.pidb
-/Project/Project/Assets/Assembly-CSharp.pidb.meta
-Project//Project/Project.userprefs
-/Project/Assets/Other Assets 1.meta
-/Project/Assets/Other Assets 1/Travis.meta
-/Project/Assets/Other Assets 1/Travis/5MinuteGUI.meta
-/Project/Assets/Other Assets 1/Travis/5MinuteGUI/Music.meta
-/Project/Assets/Other Assets 1/Travis/5MinuteGUI/Sce.meta
-/Project/Assets/Other Assets 1/Travis/5MinuteGUI/Textures.meta
-/Project/Assets/Other Assets 1/Travis/5MinuteGUI/Textures/GolfGUI.meta
