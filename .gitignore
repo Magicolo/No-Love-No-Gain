@@ -13,3 +13,5 @@
 *.user
 *.userprefs
 *.pidb
+*.csproj
+*.sln
