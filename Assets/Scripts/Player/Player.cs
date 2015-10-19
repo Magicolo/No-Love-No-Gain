@@ -56,17 +56,17 @@ public class Player : MonoBehaviourExtended, IInputListener
 		_currentSpeed = _motionX * MoveSpeed;
 
 		if (Gravity.Angle == 90)
-			Rigidbody.AccelerateTowards(_currentSpeed, MoveAcceleration, TimeManager.Instance.GetFixedDeltaTime(TimeManager.TimeChannels.Player), axes: Axes.X);
+			Rigidbody.AccelerateTowards(_currentSpeed, MoveAcceleration, TimeManager.Player.FixedDeltaTime, axes: Axes.X);
 		else if (Gravity.Angle == 180)
-			Rigidbody.AccelerateTowards(-_currentSpeed, MoveAcceleration, TimeManager.Instance.GetFixedDeltaTime(TimeManager.TimeChannels.Player), axes: Axes.Y);
+			Rigidbody.AccelerateTowards(-_currentSpeed, MoveAcceleration, TimeManager.Player.FixedDeltaTime, axes: Axes.Y);
 		else if (Gravity.Angle == 270)
-			Rigidbody.AccelerateTowards(-_currentSpeed, MoveAcceleration, TimeManager.Instance.GetFixedDeltaTime(TimeManager.TimeChannels.Player), axes: Axes.X);
+			Rigidbody.AccelerateTowards(-_currentSpeed, MoveAcceleration, TimeManager.Player.FixedDeltaTime, axes: Axes.X);
 		else if (Gravity.Angle == 0)
-			Rigidbody.AccelerateTowards(_currentSpeed, MoveAcceleration, TimeManager.Instance.GetFixedDeltaTime(TimeManager.TimeChannels.Player), axes: Axes.Y);
+			Rigidbody.AccelerateTowards(_currentSpeed, MoveAcceleration, TimeManager.Player.FixedDeltaTime, axes: Axes.Y);
 		else
 		{
 			Vector3 relativeVelocity = Gravity.WorldToRelative(Rigidbody.velocity);
-			relativeVelocity.x = Mathf.Lerp(relativeVelocity.x, _currentSpeed, TimeManager.Instance.GetFixedDeltaTime(TimeManager.TimeChannels.Player) * MoveAcceleration);
+			relativeVelocity.x = Mathf.Lerp(relativeVelocity.x, _currentSpeed, TimeManager.Player.FixedDeltaTime * MoveAcceleration);
 
 			Rigidbody.SetVelocity(Gravity.RelativeToWorld(relativeVelocity));
 		}

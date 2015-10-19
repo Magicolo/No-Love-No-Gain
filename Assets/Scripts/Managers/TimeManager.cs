@@ -26,32 +26,32 @@ public class TimeManager : Singleton<TimeManager>
 		UI,
 		World,
 		Player,
-		Enemies,
+		Enemy,
 		Count
 	}
 
-	TimeChannel[] _channels;
+	List<TimeChannel> _channels = new List<TimeChannel>();
+
+	public static TimeChannel UI = new TimeChannel(TimeChannels.UI);
+	public static TimeChannel World = new TimeChannel(TimeChannels.World);
+	public static TimeChannel Player = new TimeChannel(TimeChannels.Player);
+	public static TimeChannel Enemy = new TimeChannel(TimeChannels.Enemy);
 
 	protected override void Awake()
 	{
 		base.Awake();
 
-		_channels = new TimeChannel[(int)TimeChannels.Count];
-
-		for (int i = 0; i < _channels.Length; i++)
-		{
-			TimeChannel timeChannel = new TimeChannel((TimeChannels)i);
-
-			_channels[i] = timeChannel;
-		}
+		_channels.Add(UI);
+		_channels.Add(World);
+		_channels.Add(Player);
+		_channels.Add(Enemy);
 	}
 
 	void Update()
 	{
-		for (int i = 0; i < _channels.Length; i++)
+		for (int i = 0; i < _channels.Count; i++)
 		{
 			TimeChannel timeChannel = _channels[i];
-
 			timeChannel.DeltaTime = Time.deltaTime * timeChannel.TimeScale;
 			timeChannel.Time += timeChannel.DeltaTime;
 		}
@@ -59,10 +59,9 @@ public class TimeManager : Singleton<TimeManager>
 
 	void FixedUpdate()
 	{
-		for (int i = 0; i < _channels.Length; i++)
+		for (int i = 0; i < _channels.Count; i++)
 		{
 			TimeChannel timeChannel = _channels[i];
-
 			timeChannel.DeltaTime = Time.fixedDeltaTime * timeChannel.TimeScale;
 		}
 	}
