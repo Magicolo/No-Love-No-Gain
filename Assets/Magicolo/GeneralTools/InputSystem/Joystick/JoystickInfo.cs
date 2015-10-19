@@ -4,254 +4,249 @@ using System.Collections.Generic;
 using Magicolo;
 using Magicolo.GeneralTools;
 
-namespace Magicolo {
+namespace Magicolo
+{
 	[System.Serializable]
-	public class JoystickInfo : ControllerInfo {
+	public class JoystickInfo : ControllerInfo
+	{
+		[SerializeField, PropertyField]
+		Joysticks _joystick;
+		public Joysticks Joystick
+		{
+			get { return _joystick; }
+			set
+			{
+				_joystick = value;
+				UpdateJoystick();
+			}
+		}
 
-		[SerializeField, PropertyField] Joysticks joystick;
-		public Joysticks Joystick {
-			get {
-				return joystick;
-			}
-			set {
-				joystick = value;
-				
-				UpdateButtons();
-				UpdateAxes();
-			}
-		}
-		
-		[SerializeField] List<JoystickButton> buttons = new List<JoystickButton>();
-		[SerializeField] List<JoystickAxis> axes = new List<JoystickAxis>();
-		
-		Dictionary<string, List<JoystickButton>> nameButtonDict;
-		Dictionary<string, List<JoystickButton>> NameButtonDict {
-			get {
-				if (nameButtonDict == null) {
+		[SerializeField]
+		List<JoystickButton> _buttons = new List<JoystickButton>();
+		[SerializeField]
+		List<JoystickAxis> _axes = new List<JoystickAxis>();
+
+		Dictionary<string, List<JoystickButton>> _nameButtonDict;
+		Dictionary<string, List<JoystickButton>> NameButtonDict
+		{
+			get
+			{
+				if (_nameButtonDict == null)
 					BuildNameButtonDict();
-				}
-				
-				return nameButtonDict;
+
+				return _nameButtonDict;
 			}
 		}
-		
-		Dictionary<string, List<JoystickAxis>> nameAxisDict;
-		Dictionary<string, List<JoystickAxis>> NameAxisDict {
-			get {
-				if (nameAxisDict == null) {
+
+		Dictionary<string, List<JoystickAxis>> _nameAxisDict;
+		Dictionary<string, List<JoystickAxis>> NameAxisDict
+		{
+			get
+			{
+				if (_nameAxisDict == null)
 					BuildNameAxisDict();
-				}
-				
-				return nameAxisDict;
+
+				return _nameAxisDict;
 			}
 		}
-		
-		public JoystickInfo(string name, Joysticks joystick, JoystickButton[] buttons, JoystickAxis[] axes, IInputListener[] listeners)
-			: base(name, listeners) {
-			
-			this.joystick = joystick;
-			this.buttons = new List<JoystickButton>(buttons);
-			this.axes = new List<JoystickAxis>(axes);
+
+		public JoystickInfo(string name, Joysticks joystick, JoystickButton[] buttons, JoystickAxis[] axes, IInputListener[] listeners) : base(name, listeners)
+		{
+			_joystick = joystick;
+			_buttons = new List<JoystickButton>(buttons);
+			_axes = new List<JoystickAxis>(axes);
 		}
-		
-		public void UpdateInput() {
-			if (!HasListeners()) {
+
+		public void UpdateInput()
+		{
+			if (!HasListeners())
 				return;
+
+			for (int i = 0; i < _buttons.Count; i++)
+			{
+				JoystickButton button = _buttons[i];
+				if (Input.GetKeyDown(button.Key))
+					SendButtonInput(button.Name, ButtonStates.Down);
+				else if (Input.GetKeyUp(button.Key))
+					SendButtonInput(button.Name, ButtonStates.Up);
+				else if (Input.GetKey(button.Key))
+					SendButtonInput(button.Name, ButtonStates.Pressed);
 			}
-			
-			foreach (string buttonName in NameButtonDict.Keys) {
-				foreach (JoystickButton button in NameButtonDict[buttonName]) {
-					if (Input.GetKeyDown(button.Key)) {
-						SendInput(button.Name, ButtonStates.Down);
-						break;
-					}
-					
-					if (Input.GetKeyUp(button.Key)) {
-						SendInput(button.Name, ButtonStates.Up);
-						break;
-					}
-					
-					if (Input.GetKey(button.Key)) {
-						SendInput(button.Name, ButtonStates.Pressed);
-						break;
-					}
-				}
-			}
-			
-			foreach (JoystickAxis axis in axes) {
-				float currentValue = Input.GetAxis(axis.AxisName);
-					
-				if ((axis.LastValue != 0 && currentValue == 0) || currentValue - axis.LastValue != 0) {
+
+			for (int i = 0; i < _axes.Count; i++)
+			{
+				JoystickAxis axis = _axes[i];
+				float currentValue = Input.GetAxis(axis.Axis);
+
+				if ((axis.LastValue != 0 && currentValue == 0) || currentValue - axis.LastValue != 0)
+				{
 					axis.LastValue = currentValue;
-					
-					SendInput(axis.Name, currentValue);
+
+					SendAxisInput(axis.Name, currentValue);
 				}
 			}
 		}
-		
-		public JoystickButton[] GetButtons() {
-			return buttons.ToArray();
+
+		public JoystickButton[] GetButtons()
+		{
+			return _buttons.ToArray();
 		}
-		
-		public JoystickButton[] GetButtons(string buttonName) {
+
+		public JoystickButton[] GetButtons(string buttonName)
+		{
 			return NameButtonDict[buttonName].ToArray();
 		}
-		
-		public string[] GetButtonNames() {
+
+		public string[] GetButtonNames()
+		{
 			return NameButtonDict.GetKeyArray();
 		}
-		
-		public void SetButtons(JoystickButton[] buttons) {
-			this.buttons = new List<JoystickButton>(buttons);
-			
+
+		public void SetButtons(JoystickButton[] buttons)
+		{
+			_buttons = new List<JoystickButton>(buttons);
+
 			BuildNameButtonDict();
 		}
-		
-		public void CopyButtons(JoystickInfo info) {
+
+		public void CopyButtons(JoystickInfo info)
+		{
 			SetButtons(info.GetButtons());
 		}
-		
-		public void SwitchButtons(JoystickInfo info) {
+
+		public void SwitchButtons(JoystickInfo info)
+		{
 			JoystickButton[] otherButtons = info.GetButtons();
-			
+
 			info.SetButtons(GetButtons());
 			SetButtons(otherButtons);
 		}
-		
-		public void AddButton(JoystickButton button) {
-			buttons.Add(button);
-			
-			if (!NameButtonDict.ContainsKey(button.Name)) {
+
+		public void AddButton(JoystickButton button)
+		{
+			_buttons.Add(button);
+
+			if (!NameButtonDict.ContainsKey(button.Name))
+			{
 				NameButtonDict[button.Name] = new List<JoystickButton>();
 			}
 
 			NameButtonDict[button.Name].Add(button);
 		}
-		
-		public void AddButtons(JoystickButton[] buttons) {
-			foreach (JoystickButton button in buttons) {
-				AddButton(button);
-			}
-		}
-		
-		public void RemoveButton(JoystickButton button) {
-			buttons.Remove(button);
-			
-			if (NameButtonDict.ContainsKey(button.Name)) {
+
+		public void RemoveButton(JoystickButton button)
+		{
+			_buttons.Remove(button);
+
+			if (NameButtonDict.ContainsKey(button.Name))
+			{
 				NameButtonDict[button.Name].Remove(button);
 			}
 		}
-	
-		public void RemoveButtons(JoystickButton[] buttons) {
-			foreach (JoystickButton button in buttons) {
-				RemoveButton(button);
-			}
+
+		public JoystickAxis[] GetAxes()
+		{
+			return _axes.ToArray();
 		}
-		
-		public JoystickAxis[] GetAxes() {
-			return axes.ToArray();
-		}
-		
-		public JoystickAxis[] GetAxes(string axisName) {
+
+		public JoystickAxis[] GetAxes(string axisName)
+		{
 			return NameAxisDict[axisName].ToArray();
 		}
-		
-		public string[] GetAxisNames() {
+
+		public string[] GetAxisNames()
+		{
 			return NameAxisDict.GetKeyArray();
 		}
-		
-		public void SetAxes(JoystickAxis[] axes) {
-			this.axes = new List<JoystickAxis>(axes);
-			
+
+		public void SetAxes(JoystickAxis[] axes)
+		{
+			_axes = new List<JoystickAxis>(axes);
+
 			BuildNameAxisDict();
 		}
-		
-		public void CopyAxes(JoystickInfo info) {
+
+		public void CopyAxes(JoystickInfo info)
+		{
 			SetAxes(info.GetAxes());
 		}
 
-		public void SwitchAxes(JoystickInfo info) {
+		public void SwitchAxes(JoystickInfo info)
+		{
 			JoystickAxis[] otherAxes = info.GetAxes();
-			
+
 			info.SetAxes(GetAxes());
 			SetAxes(otherAxes);
 		}
-		
-		public void AddAxis(JoystickAxis axis) {
-			axes.Add(axis);
-			
-			if (!NameAxisDict.ContainsKey(axis.Name)) {
+
+		public void AddAxis(JoystickAxis axis)
+		{
+			_axes.Add(axis);
+
+			if (!NameAxisDict.ContainsKey(axis.Name))
 				NameAxisDict[axis.Name] = new List<JoystickAxis>();
-			}
 
 			NameAxisDict[axis.Name].Add(axis);
 		}
-		
-		public void AddAxes(JoystickAxis[] axes) {
-			foreach (JoystickAxis axis in axes) {
-				AddAxis(axis);
-			}
-		}
-		
-		public void RemoveAxis(JoystickAxis axis) {
-			axes.Remove(axis);
-			
-			if (NameAxisDict.ContainsKey(axis.Name)) {
+
+		public void RemoveAxis(JoystickAxis axis)
+		{
+			_axes.Remove(axis);
+
+			if (NameAxisDict.ContainsKey(axis.Name))
+			{
 				NameAxisDict[axis.Name].Remove(axis);
 			}
 		}
 
-		public void RemoveAxes(JoystickAxis[] axes) {
-			foreach (JoystickAxis axis in axes) {
-				RemoveAxis(axis);
-			}
-		}
-		
-		public void CopyInput(JoystickInfo info) {
+		public void CopyInput(JoystickInfo info)
+		{
 			CopyButtons(info);
 			CopyAxes(info);
 		}
-		
-		public void SwitchInput(JoystickInfo info) {
+
+		public void SwitchInput(JoystickInfo info)
+		{
 			SwitchButtons(info);
 			SwitchAxes(info);
 		}
-		
-		void UpdateButtons() {
-			foreach (JoystickButton button in buttons) {
-				button.Joystick = Joystick;
-//				button.Key = InputSystem.GetKeyFromJoystickInput(Joystick, InputSystem.GetJoystickButtonFromKey(button.Key));
+
+		void UpdateJoystick()
+		{
+			for (int i = 0; i < _buttons.Count; i++)
+				_buttons[i].Joystick = Joystick;
+
+			for (int i = 0; i < _axes.Count; i++)
+				_axes[i].Joystick = Joystick;
+		}
+
+		void BuildNameButtonDict()
+		{
+			_nameButtonDict = new Dictionary<string, List<JoystickButton>>();
+
+			for (int i = 0; i < _buttons.Count; i++)
+			{
+				JoystickButton button = _buttons[i];
+
+				if (!_nameButtonDict.ContainsKey(button.Name))
+					_nameButtonDict[button.Name] = new List<JoystickButton>();
+
+				_nameButtonDict[button.Name].Add(button);
 			}
 		}
 
-		void UpdateAxes() {
-			foreach (JoystickAxis axis in axes) {
-				axis.Joystick = Joystick;
-//				axis.AxisName = InputSystem.GetAxisFromJoystickInput(Joystick, InputSystem.GetJoystickAxisFromAxis(axis.AxisName));
-			}
-		}
-		
-		void BuildNameButtonDict() {
-			nameButtonDict = new Dictionary<string, List<JoystickButton>>();
-			
-			foreach (JoystickButton button in buttons) {
-				if (!nameButtonDict.ContainsKey(button.Name)) {
-					nameButtonDict[button.Name] = new List<JoystickButton>();
-				}
-				
-				nameButtonDict[button.Name].Add(button);
-			}
-		}
+		void BuildNameAxisDict()
+		{
+			_nameAxisDict = new Dictionary<string, List<JoystickAxis>>();
 
-		void BuildNameAxisDict() {
-			nameAxisDict = new Dictionary<string, List<JoystickAxis>>();
-			
-			foreach (JoystickAxis axis in axes) {
-				if (!nameAxisDict.ContainsKey(axis.Name)) {
-					nameAxisDict[axis.Name] = new List<JoystickAxis>();
-				}
-				
-				nameAxisDict[axis.Name].Add(axis);
+			for (int i = 0; i < _axes.Count; i++)
+			{
+				JoystickAxis axis = _axes[i];
+
+				if (!_nameAxisDict.ContainsKey(axis.Name))
+					_nameAxisDict[axis.Name] = new List<JoystickAxis>();
+
+				_nameAxisDict[axis.Name].Add(axis);
 			}
 		}
 	}

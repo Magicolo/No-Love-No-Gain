@@ -2,31 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using Magicolo;
+using Magicolo.GeneralTools;
 
-namespace Magicolo {
-	[System.Serializable]  
-	public class KeyboardButton {
+namespace Magicolo
+{
+	[System.Serializable]
+	public class KeyboardButton : ButtonBase
+	{
+		public KeyboardButton(string name, KeyCode key) : base(name, key)
+		{
 
-		[SerializeField] string name = "";
-		public string Name {
-			get {
-				return name;
-			}
-		}
-
-		[SerializeField] KeyCode key;
-		public KeyCode Key {
-			get {
-				return key;
-			}
-			set {
-				key = value;
-			}
-		}
-		
-		public KeyboardButton(string name, KeyCode button) {
-			this.name = name;
-			this.key = button;
 		}
 	}
 }

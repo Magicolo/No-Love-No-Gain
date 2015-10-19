@@ -7,7 +7,6 @@ namespace Magicolo
 	[AttributeUsage(AttributeTargets.Field)]
 	public sealed class ButtonAttribute : CustomAttributeBase
 	{
-
 		public string label = "";
 		public string methodName = "";
 		public string indexVariableName = "";

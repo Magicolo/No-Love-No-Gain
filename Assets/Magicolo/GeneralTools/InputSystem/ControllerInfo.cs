@@ -3,100 +3,91 @@ using System.Collections;
 using System.Collections.Generic;
 using Magicolo;
 
-namespace Magicolo {
+namespace Magicolo
+{
 	[System.Serializable]
-	public abstract class ControllerInfo : INamable {
+	public abstract class ControllerInfo : INamable
+	{
+		[SerializeField]
+		string _name = "";
+		public string Name { get { return _name; } set { _name = value; } }
 
-		[SerializeField] string name = "";
-		public string Name {
-			get {
-				return name;
-			}
-			set {
-				name = value;
-			}
-		}
-		
-		[SerializeField] List<MonoBehaviour> listenerReferences = new List<MonoBehaviour>();
-		
-		List<IInputListener> listeners = new List<IInputListener>();
-		
-		protected ControllerInfo(string name, IInputListener[] listeners) {
-			this.name = name;
-			this.listeners = new List<IInputListener>(listeners);
-		
+		[SerializeField]
+		List<MonoBehaviour> _listenerReferences = new List<MonoBehaviour>();
+		List<IInputListener> _listeners = new List<IInputListener>();
+
+		protected ControllerInfo(string name, IInputListener[] listeners)
+		{
+			_name = name;
+			_listeners = new List<IInputListener>(listeners);
+
 			SetListeners();
 		}
-		
-		public IInputListener[] GetListeners() {
-			return listeners.ToArray();
+
+		public IInputListener[] GetListeners()
+		{
+			return _listeners.ToArray();
 		}
-		
-		public void SetListeners(IInputListener[] listeners) {
-			this.listeners = new List<IInputListener>(listeners);
-			
+
+		public void SetListeners(IInputListener[] listeners)
+		{
+			_listeners = new List<IInputListener>(listeners);
+
 			SetListeners();
 		}
-		
-		public void SetListeners() {
-			listeners = new List<IInputListener>();
-			
-			foreach (MonoBehaviour listenerReference in listenerReferences) {
-				IInputListener listener = listenerReference as IInputListener;
-				
-				if (listener != null) {
-					listeners.Add(listener);
-				}
+
+		public void SetListeners()
+		{
+			_listeners = new List<IInputListener>();
+
+			for (int i = 0; i < _listenerReferences.Count; i++)
+			{
+				IInputListener listener = _listenerReferences[i] as IInputListener;
+
+				if (listener != null)
+					_listeners.Add(listener);
 			}
 		}
-		
-		public void AddListener(IInputListener listener) {
-			if (!listeners.Contains(listener)) {
-				listeners.Add(listener);
-			}
+
+		public void AddListener(IInputListener listener)
+		{
+			if (!_listeners.Contains(listener))
+				_listeners.Add(listener);
 		}
-		
-		public void AddListeners(IInputListener[] listeners) {
-			foreach (IInputListener listener in listeners) {
-				AddListener(listener);
-			}
+
+		public void RemoveListener(IInputListener listener)
+		{
+			_listeners.Remove(listener);
 		}
-		
-		public void RemoveListener(IInputListener listener) {
-			listeners.Remove(listener);
+
+		public bool HasListeners()
+		{
+			return _listeners.Count > 0;
 		}
-		
-		public void RemoveListeners(IInputListener[] listeners) {
-			foreach (IInputListener listener in listeners) {
-				RemoveListener(listener);
-			}
-		}
-		
-		public bool HasListeners() {
-			return listeners.Count > 0;
-		}
-	
-		public void CopyListeners(ControllerInfo info) {
+
+		public void CopyListeners(ControllerInfo info)
+		{
 			SetListeners(info.GetListeners());
 		}
-		
-		public void SwitchListeners(ControllerInfo info) {
+
+		public void SwitchListeners(ControllerInfo info)
+		{
 			IInputListener[] otherListeners = info.GetListeners();
-			
+
 			info.SetListeners(GetListeners());
 			SetListeners(otherListeners);
 		}
-	
-		public void SendInput(string inputName, ButtonStates state) {
-			foreach (IInputListener listener in listeners.ToArray()) {
-				listener.OnButtonInput(new ButtonInput(Name, inputName, state));
-			}
+
+		public void SendButtonInput(string inputName, ButtonStates state)
+		{
+			for (int i = 0; i < _listeners.Count; i++)
+				_listeners[i].OnButtonInput(new ButtonInput(Name, inputName, state));
 		}
-		
-		public void SendInput(string inputName, float value) {
-			foreach (IInputListener listener in listeners) {
-				listener.OnAxisInput(new AxisInput(Name, inputName, value));
-			}
+
+		public void SendAxisInput(string inputName, float value)
+		{
+			for (int i = 0; i < _listeners.Count; i++)
+				_listeners[i].OnAxisInput(new AxisInput(Name, inputName, value));
 		}
 	}
 }

@@ -9,6 +9,7 @@ public class TimeManager : Singleton<TimeManager>
 	{
 		public float Time;
 		public float DeltaTime;
+		public float FixedDeltaTime;
 		public float TimeScale;
 
 		TimeChannels _channel;
@@ -56,6 +57,16 @@ public class TimeManager : Singleton<TimeManager>
 		}
 	}
 
+	void FixedUpdate()
+	{
+		for (int i = 0; i < _channels.Length; i++)
+		{
+			TimeChannel timeChannel = _channels[i];
+
+			timeChannel.DeltaTime = Time.fixedDeltaTime * timeChannel.TimeScale;
+		}
+	}
+
 	public TimeChannel GetTimeChannel(TimeChannels channel)
 	{
 		return _channels[(int)channel];
@@ -64,6 +75,11 @@ public class TimeManager : Singleton<TimeManager>
 	public float GetDeltaTime(TimeChannels channel)
 	{
 		return _channels[(int)channel].DeltaTime;
+	}
+
+	public float GetFixedDeltaTime(TimeChannels channel)
+	{
+		return _channels[(int)channel].FixedDeltaTime;
 	}
 
 	public float GetTime(TimeChannels channel)

@@ -2,69 +2,58 @@
 using System.Collections;
 using System.Collections.Generic;
 using Magicolo;
+using Magicolo.GeneralTools;
 
-namespace Magicolo {
+namespace Magicolo
+{
 	[System.Serializable]
-	public class JoystickButton {
-
-		[SerializeField] string name = "";
-		public string Name {
-			get {
-				return name;
-			}
-		}
-		
-		[SerializeField] Joysticks joystick;
-		public Joysticks Joystick {
-			get {
-				return joystick;
-			}
-			set {
-				joystick = value;
-				
-				key = InputSystem.JoystickInputToKey(joystick, button);
+	public class JoystickButton : ButtonBase
+	{
+		[SerializeField]
+		Joysticks _joystick;
+		public Joysticks Joystick
+		{
+			get { return _joystick; }
+			set
+			{
+				_joystick = value;
+				_key = InputSystem.JoystickInputToKey(_joystick, _button);
 			}
 		}
 
-		[SerializeField, PropertyField] JoystickButtons button;
-		public JoystickButtons Button {
-			get {
-				return button;
-			}
-			set {
-				button = value;
-				
-				key = InputSystem.JoystickInputToKey(joystick, button);
+		[SerializeField, PropertyField]
+		JoystickButtons _button;
+		public JoystickButtons Button
+		{
+			get { return _button; }
+			set
+			{
+				_button = value;
+				_key = InputSystem.JoystickInputToKey(_joystick, _button);
 			}
 		}
 
-		[SerializeField] KeyCode key;
-		public KeyCode Key {
-			get {
-				return key;
-			}
-			set {
-				key = value;
-				
-				joystick = InputSystem.KeyToJoystick(key);
-				button = InputSystem.KeyToJoystickButton(key);
+		public override KeyCode Key
+		{
+			get { return _key; }
+			set
+			{
+				_key = value;
+				_joystick = InputSystem.KeyToJoystick(_key);
+				_button = InputSystem.KeyToJoystickButton(_key);
 			}
 		}
-		
-		public JoystickButton(string name, Joysticks joystick, JoystickButtons button) {
-			this.name = name;
-			this.joystick = joystick;
-			this.button = button;
-			
-			key = InputSystem.JoystickInputToKey(joystick, button);
+
+		public JoystickButton(string name, Joysticks joystick, JoystickButtons button) : base(name, InputSystem.JoystickInputToKey(joystick, button))
+		{
+			_joystick = joystick;
+			_button = button;
 		}
-		
-		public JoystickButton(string name, KeyCode key) {
-			this.name = name;
-			this.key = key;
-			
-			joystick = InputSystem.KeyToJoystick(key);
-			button = InputSystem.KeyToJoystickButton(key);
+
+		public JoystickButton(string name, KeyCode key) : base(name, key)
+		{
+			_joystick = InputSystem.KeyToJoystick(key);
+			_button = InputSystem.KeyToJoystickButton(key);
 		}
 	}
 }

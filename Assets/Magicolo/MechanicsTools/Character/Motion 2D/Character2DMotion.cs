@@ -134,7 +134,7 @@ public class Character2DMotion : StateLayer
 	{
 		base.OnUpdate();
 
-		RaySettings.angle = Gravity.Angle - 90;
+		RaySettings.Angle = Gravity.Angle - 90;
 		Ground = RaySettings.GetGround(transform.position, Vector3.down);
 
 		if (Ground == null)
