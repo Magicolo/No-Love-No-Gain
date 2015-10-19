@@ -39,12 +39,11 @@ namespace Magicolo
 		}
 		public AudioItemManager ItemManager { get { return _itemManager; } }
 
-		void Awake()
+		protected override void Awake()
 		{
-			_instance = this;
+			base.Awake();
 
 			InitializeReference();
-			DontDestroyOnLoad(gameObject);
 		}
 
 		void Reset()
