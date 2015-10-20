@@ -26,9 +26,9 @@ public abstract class DamageableBase : MonoBehaviour, IDamageable {
 
     internal abstract void TakeDamage();
 
-    public bool CanBeDamagedBy(DamageType damageType)
+    public bool CanBeDamagedBy(DamageType attack)
     {
-        return (VulnerableDamageType & damageType) > 0;     
+        return VulnerableDamageType.MatchOneFrom(attack);
     }
 
     public abstract void Die();

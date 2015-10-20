@@ -1,10 +1,18 @@
 ﻿using System;
 
-[Flags]
-public enum DamageType {
-    God = 1,
-    Hearts = 2,
-    Crabs = 4,
-    Something = 8
+[Serializable]
+public class DamageType {
+    public bool God;
+    public bool Heart;
+    public bool Crabs;
+    public bool Population;
+
+    public bool MatchOneFrom(DamageType other)
+    {
+        return other.God 
+            || (Heart && other.Heart)
+            || (Crabs && other.Crabs)
+            || (Population && other.Population);
+    }
 }
 
