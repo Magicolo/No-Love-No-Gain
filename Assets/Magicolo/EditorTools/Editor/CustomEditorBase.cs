@@ -531,7 +531,8 @@ namespace Magicolo.EditorTools
 
 					EditorGUI.EndDisabledGroup();
 
-					Reorderable(arrayProperty, i, disableOnPlay, new Rect(rect.x + 8f, rect.y, rect.width - 24f, 15f), new Rect(rect.x, rect.y, rect.width - 1f, 15f), reorderCallback);
+					if (Reorderable(arrayProperty, i, disableOnPlay, new Rect(rect.x + 8f, rect.y, rect.width - 24f, 15f), new Rect(rect.x, rect.y, rect.width - 1f, 15f), reorderCallback))
+						break;
 
 					if (drawer == null)
 						EditorGUILayout.PropertyField(elementProperty, true);
@@ -1315,13 +1316,9 @@ namespace Magicolo.EditorTools
 		public void DeleteFromArray(SerializedProperty arrayProperty, int indexToRemove, DeleteCallback deleteCallback = null)
 		{
 			if (deleteCallback == null)
-			{
 				arrayProperty.RemoveAt(indexToRemove);
-			}
 			else
-			{
 				deleteCallback(arrayProperty, indexToRemove);
-			}
 
 			deleteBreak = true;
 		}
@@ -1331,9 +1328,7 @@ namespace Magicolo.EditorTools
 			if (clearCallback == null)
 			{
 				if (property.isArray)
-				{
 					ClearArray(property);
-				}
 				else
 				{
 					property.SetValue(null);
@@ -1342,9 +1337,8 @@ namespace Magicolo.EditorTools
 				}
 			}
 			else
-			{
 				clearCallback(property);
-			}
+
 			deleteBreak = true;
 		}
 
@@ -1357,9 +1351,8 @@ namespace Magicolo.EditorTools
 				EditorUtility.SetDirty(arrayProperty.serializedObject.targetObject);
 			}
 			else
-			{
 				clearCallback(arrayProperty);
-			}
+
 			deleteBreak = true;
 		}
 
@@ -1372,18 +1365,16 @@ namespace Magicolo.EditorTools
 				EditorUtility.SetDirty(arrayProperty.serializedObject.targetObject);
 			}
 			else
-			{
 				reorderCallback(arrayProperty, sourceIndex, targetIndex);
-			}
 		}
 
 		public static int GetArraySize(SerializedProperty property, int overrideArraySize)
 		{
 			int arraySize = property.arraySize;
+
 			if (overrideArraySize >= 0)
-			{
 				arraySize = overrideArraySize;
-			}
+
 			return arraySize;
 		}
 		#endregion
