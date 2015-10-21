@@ -5,13 +5,17 @@ using Rick;
 
 public class BuildingBase : DamageableBase
 {
-    public override void Die()
-    {
-        gameObject.Remove();
-    }
+	public override bool CanBeDamagedBy(DamageSources damageSource)
+	{
+		return false;
+	}
 
-    internal override void TakeDamage()
-    {
-        
-    }
+	public override void Die()
+	{
+		gameObject.Remove();
+	}
+
+	protected override void OnDamaged()
+	{
+	}
 }

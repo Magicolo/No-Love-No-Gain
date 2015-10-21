@@ -3,35 +3,26 @@ using System.Collections;
 using Magicolo;
 using System;
 
-public abstract class DamageableBase : MonoBehaviour, IDamageable {
-
-
+public abstract class DamageableBase : MonoBehaviour, IDamageable
+{
 	public float Hp;
-	public DamageType VulnerableDamageType;
-	
-	internal abstract void TakeDamage();
-	
-	public bool CanBeDamagedBy(DamageType attack)
-	{
-		return VulnerableDamageType.CanBeDamagedBy(attack);
-	}
-	
+
+	protected abstract void OnDamaged();
+
 	public abstract void Die();
-	
-	public void Damage(float damage, DamageType attackType, Vector2 knowback = default(Vector2))
+
+	public abstract bool CanBeDamagedBy(DamageSources damageSource);
+
+	public virtual void Damage(float damage, DamageSources damageSource, Vector2 knockback = default(Vector2))
 	{
-		if (CanBeDamagedBy(attackType))
+		if (CanBeDamagedBy(damageSource))
 		{
 			Hp -= damage;
-			if (Hp < 0)
-			{
-				Die();
 
-			} 
+			if (Hp < 0)
+				Die();
 			else
-			{
-				TakeDamage();
-			}
+				OnDamaged();
 		}
 	}
 }

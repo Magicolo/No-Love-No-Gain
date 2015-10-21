@@ -1,30 +1,35 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Magicolo;
+using System;
 
-public class Crabs : DamageableBase {
+public class Crabs : DamageableBase
+{
+	[Disable]
+	public CrabPince[] Pinces;
 
-    [Disable]
-    public CrabPince[] pinces;
+	public enum CrabStates { Idle, Charging, Attacking };
 
-    public enum CrabState {IDLE,CHARGING_ATTACK,ATTACKING};
-    [Disable] public CrabState crabState;
+	[Disable]
+	public CrabStates CrabState;
 
-    public override void Die()
-    {
-        this.Destroy();
-    }
+	public override void Die()
+	{
+		this.Destroy();
+	}
 
-    internal override void TakeDamage()
-    {
-        //throw new NotImplementedException();
-    }
+	void Start()
+	{
+		Pinces = GetComponentsInChildren<CrabPince>();
+	}
 
-    void Start ()
-    {
-        pinces = GetComponentsInChildren<CrabPince>();
-        
-    }
+	public override bool CanBeDamagedBy(DamageSources damageSource)
+	{
+		return false;
+	}
 
-    
+	protected override void OnDamaged()
+	{
+
+	}
 }

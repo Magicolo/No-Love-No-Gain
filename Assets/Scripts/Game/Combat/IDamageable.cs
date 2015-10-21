@@ -1,9 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public interface IDamageable {
+public enum DamageSources
+{
+	Player,
+	Crabs,
+	Population
+}
 
-
-    void Damage(float damage, DamageType attackType, Vector2 knowbackForce = default (Vector2));
-	
+public interface IDamageable
+{
+	bool CanBeDamagedBy(DamageSources damageSource);
+	void Damage(float damage, DamageSources damageSource, Vector2 knockback = default(Vector2));
 }
