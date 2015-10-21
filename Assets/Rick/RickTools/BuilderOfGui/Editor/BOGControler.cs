@@ -78,7 +78,7 @@ namespace RickTools.BOG{
 			
 			setTransformStuff(buttonObj, currentPanel.transform, Vector2.zero );
 			
-			Button button = buttonObj.GetComponent<Button>();
+			//Button button = buttonObj.GetComponent<Button>();
 			BOGButton bogButton = buttonObj.GetComponent<BOGButton>();
 			bogButton.panel = currentPanel;
 			bogButton.makeUnityButtonConnection(actionCommand);
