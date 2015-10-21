@@ -18,7 +18,7 @@ public abstract class DamageableBase : MonoBehaviour, IDamageable {
 	
 	public abstract void Die();
 	
-	public void Damage(float damage, DamageType attackType, float knockbackForce = 0, Vector2 knowbackForce = default(Vector2))
+	public void Damage(float damage, DamageType attackType, Vector2 knowback = default(Vector2))
 	{
 		if (CanBeDamagedBy(attackType))
 		{

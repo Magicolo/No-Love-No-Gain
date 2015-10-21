@@ -4,6 +4,6 @@ using System.Collections;
 public interface IDamageable {
 
 
-    void Damage(float damage, DamageType attackType, float knockbackForce = 0, Vector2 knowbackForce = default (Vector2));
+    void Damage(float damage, DamageType attackType, Vector2 knowbackForce = default (Vector2));
 	
 }
