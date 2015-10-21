@@ -2,15 +2,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Magicolo;
 
-public class TimeManager : Singleton<TimeManager>
+public class Kronos : Singleton<Kronos>
 {
 	public class TimeChannel
 	{
 		public float Time;
 		public float DeltaTime;
 		public float FixedDeltaTime;
-		public float TimeScale;
+		public float TimeScale = 1f;
 
 		TimeChannels _channel;
 		public TimeChannels Channel { get { return _channel; } }
@@ -62,7 +63,7 @@ public class TimeManager : Singleton<TimeManager>
 		for (int i = 0; i < _channels.Count; i++)
 		{
 			TimeChannel timeChannel = _channels[i];
-			timeChannel.DeltaTime = Time.fixedDeltaTime * timeChannel.TimeScale;
+			timeChannel.FixedDeltaTime = Time.fixedDeltaTime * timeChannel.TimeScale;
 		}
 	}
 

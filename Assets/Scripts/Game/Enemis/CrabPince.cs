@@ -27,7 +27,7 @@ public class CrabPince : MonoBehaviour {
 
     void Update()
     {
-        timer -= Time.deltaTime;
+        timer -= Kronos.Enemy.DeltaTime;
 
         switch (this.state)
         {

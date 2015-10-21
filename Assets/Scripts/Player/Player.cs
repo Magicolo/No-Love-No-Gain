@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Magicolo;
 
-public class Player : MonoBehaviourExtended, IInputListener
+public class Player : MonoBehaviourExtended
 {
 	[Min]
 	public float MoveSpeed;
@@ -23,6 +23,7 @@ public class Player : MonoBehaviourExtended, IInputListener
 	public Gravity2D Gravity;
 	public Animator Animator;
 	public SpriteRenderer Renderer;
+	public InputHandler Input;
 
 	float _motionX;
 	float _currentSpeed;
@@ -41,6 +42,7 @@ public class Player : MonoBehaviourExtended, IInputListener
 
 	void FixedUpdate()
 	{
+		UpdateGrounded();
 		UpdateMotion();
 		UpdateJump();
 	}
@@ -48,25 +50,25 @@ public class Player : MonoBehaviourExtended, IInputListener
 	void UpdateGrounded()
 	{
 		GroundedSettings.Angle = Gravity.Angle - 90;
-		IsGrounded = GroundedSettings.HasHit(transform.position, Vector3.down);
+		IsGrounded = GroundedSettings.HasHit(transform.position, Vector3.down, Application.isEditor);
 	}
 
 	void UpdateMotion()
 	{
-		_currentSpeed = _motionX * MoveSpeed;
+		_currentSpeed = Input.GetAxis("MotionX") * MoveSpeed;
 
-		if (Gravity.Angle == 90)
-			Rigidbody.AccelerateTowards(_currentSpeed, MoveAcceleration, TimeManager.Player.FixedDeltaTime, axes: Axes.X);
-		else if (Gravity.Angle == 180)
-			Rigidbody.AccelerateTowards(-_currentSpeed, MoveAcceleration, TimeManager.Player.FixedDeltaTime, axes: Axes.Y);
-		else if (Gravity.Angle == 270)
-			Rigidbody.AccelerateTowards(-_currentSpeed, MoveAcceleration, TimeManager.Player.FixedDeltaTime, axes: Axes.X);
-		else if (Gravity.Angle == 0)
-			Rigidbody.AccelerateTowards(_currentSpeed, MoveAcceleration, TimeManager.Player.FixedDeltaTime, axes: Axes.Y);
+		if (Gravity.Angle == 90f)
+			Rigidbody.AccelerateTowards(_currentSpeed, MoveAcceleration, Kronos.Player.FixedDeltaTime, axes: Axes.X);
+		else if (Gravity.Angle == 180f)
+			Rigidbody.AccelerateTowards(-_currentSpeed, MoveAcceleration, Kronos.Player.FixedDeltaTime, axes: Axes.Y);
+		else if (Gravity.Angle == 270f)
+			Rigidbody.AccelerateTowards(-_currentSpeed, MoveAcceleration, Kronos.Player.FixedDeltaTime, axes: Axes.X);
+		else if (Gravity.Angle == 0f)
+			Rigidbody.AccelerateTowards(_currentSpeed, MoveAcceleration, Kronos.Player.FixedDeltaTime, axes: Axes.Y);
 		else
 		{
 			Vector3 relativeVelocity = Gravity.WorldToRelative(Rigidbody.velocity);
-			relativeVelocity.x = Mathf.Lerp(relativeVelocity.x, _currentSpeed, TimeManager.Player.FixedDeltaTime * MoveAcceleration);
+			relativeVelocity.x = Mathf.Lerp(relativeVelocity.x, _currentSpeed, Kronos.Player.FixedDeltaTime * MoveAcceleration);
 
 			Rigidbody.SetVelocity(Gravity.RelativeToWorld(relativeVelocity));
 		}
@@ -74,6 +76,11 @@ public class Player : MonoBehaviourExtended, IInputListener
 
 	void UpdateJump()
 	{
+		IsJumping = Input.GetButtonPressed("Jump");
+
+		if (IsGrounded && Input.GetButtonDown("Jump"))
+			Jump();
+
 		if (!IsJumping)
 			return;
 
@@ -103,28 +110,5 @@ public class Player : MonoBehaviourExtended, IInputListener
 		_jumpIncrement = (JumpMaxHeight - JumpMinHeight) / JumpDuration;
 		_jumpDirection = -Gravity.Direction;
 		_jumpCounter = JumpDuration;
-	}
-
-	public void OnButtonInput(ButtonInput input)
-	{
-		switch (input.InputName)
-		{
-			case "Jump":
-				IsJumping = input.State == ButtonStates.Pressed;
-
-				if (input.State == ButtonStates.Down)
-					Jump();
-				break;
-		}
-	}
-
-	public void OnAxisInput(AxisInput input)
-	{
-		switch (input.InputName)
-		{
-			case "MotionX":
-				_motionX = input.Value;
-				break;
-		}
 	}
 }
