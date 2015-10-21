@@ -6,6 +6,7 @@ public class Managers : MonoBehaviourExtended
 {
 	public AudioManager AudioManagerPrefab;
 	public Kronos KronosPrefab;
+    public Mars MarsPrefab;
 
 	void Awake()
 	{
@@ -16,5 +17,8 @@ public class Managers : MonoBehaviourExtended
 
 		if (Kronos.Instance == null)
 			Instantiate(KronosPrefab).transform.parent = transform;
-	}
+
+        if (Mars.Instance == null)
+            Instantiate(MarsPrefab).transform.parent = transform;
+    }
 }
