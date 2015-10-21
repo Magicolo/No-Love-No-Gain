@@ -13,13 +13,13 @@ namespace Magicolo.EditorTools
 {
 	public static class AudioCustomMenus
 	{
-		[MenuItem("Assets/Create/Audio Settings/Source", validate = true)]
+		[MenuItem("Assets/Create/Audio Settings/Source", validate = true, priority = 9)]
 		static bool CreateAudioSourceSettingsValid()
 		{
 			return Array.Exists(Selection.objects, obj => obj is AudioClip);
 		}
 
-		[MenuItem("Assets/Create/Audio Settings/Source", priority = -1)]
+		[MenuItem("Assets/Create/Audio Settings/Source", priority = 9)]
 		static void CreateAudioSourceSettings()
 		{
 			for (int i = 0; i < Selection.objects.Length; i++)
@@ -35,31 +35,31 @@ namespace Magicolo.EditorTools
 			}
 		}
 
-		[MenuItem("Assets/Create/Audio Settings/Container/Mix", priority = 0)]
+		[MenuItem("Assets/Create/Audio Settings/Container/Mix", priority = 10)]
 		static void CreateAudioMixContainerSettings()
 		{
 			CreateAudioContainerSettings<AudioMixContainerSettings>("Mix Container");
 		}
 
-		[MenuItem("Assets/Create/Audio Settings/Container/Random", priority = 1)]
+		[MenuItem("Assets/Create/Audio Settings/Container/Random", priority = 11)]
 		static void CreateAudioRandomContainerSettings()
 		{
 			CreateAudioContainerSettings<AudioRandomContainerSettings>("Random Container");
 		}
 
-		[MenuItem("Assets/Create/Audio Settings/Container/Enumerator", priority = 2)]
+		[MenuItem("Assets/Create/Audio Settings/Container/Enumerator", priority = 12)]
 		static void CreateAudioEnumeratorContainerSettings()
 		{
 			CreateAudioContainerSettings<AudioEnumeratorContainerSettings>("Enumerator Container");
 		}
 
-		[MenuItem("Assets/Create/Audio Settings/Container/Switch", priority = 3)]
+		[MenuItem("Assets/Create/Audio Settings/Container/Switch", priority = 13)]
 		static void CreateAudioSwitchContainerSettings()
 		{
 			CreateAudioContainerSettings<AudioSwitchContainerSettings>("Switch Container");
 		}
 
-		[MenuItem("Assets/Create/Audio Settings/Container/Sequence", priority = 4)]
+		[MenuItem("Assets/Create/Audio Settings/Container/Sequence", priority = 14)]
 		static void CreateAudioSequenceContainerSettings()
 		{
 			CreateAudioContainerSettings<AudioSequenceContainerSettings>("Sequence Container");
