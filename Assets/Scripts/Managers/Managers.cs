@@ -5,7 +5,7 @@ using Magicolo;
 public class Managers : MonoBehaviourExtended
 {
 	public AudioManager AudioManagerPrefab;
-	public TimeManager TimeManagerPrefab;
+	public Kronos KronosPrefab;
 
 	void Awake()
 	{
@@ -14,7 +14,7 @@ public class Managers : MonoBehaviourExtended
 		if (AudioManager.Instance == null)
 			Instantiate(AudioManagerPrefab).transform.parent = transform;
 
-		if (TimeManager.Instance == null)
-			Instantiate(TimeManagerPrefab).transform.parent = transform;
+		if (Kronos.Instance == null)
+			Instantiate(KronosPrefab).transform.parent = transform;
 	}
 }

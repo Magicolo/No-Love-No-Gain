@@ -29,22 +29,22 @@ namespace Magicolo
 			rigidbody.Accelerate(new Vector2(acceleration, acceleration), axes);
 		}
 
-		public static void AccelerateTowards(this Rigidbody2D rigidbody, Vector2 targetAcceleration, float speed, float deltaTime, InterpolationModes interpolation = InterpolationModes.Quadratic, Axes axes = Axes.XY)
+		public static void AccelerateTowards(this Rigidbody2D rigidbody, Vector2 targetSpeed, float acceleration, float deltaTime, InterpolationModes interpolation = InterpolationModes.Quadratic, Axes axes = Axes.XY)
 		{
 			switch (interpolation)
 			{
 				case InterpolationModes.Quadratic:
-					rigidbody.SetVelocity(rigidbody.velocity.Lerp(targetAcceleration, deltaTime * speed, axes), axes);
+					rigidbody.SetVelocity(rigidbody.velocity.Lerp(targetSpeed, deltaTime * acceleration, axes), axes);
 					break;
 				case InterpolationModes.Linear:
-					rigidbody.SetVelocity(rigidbody.velocity.LerpLinear(targetAcceleration, deltaTime * speed, axes), axes);
+					rigidbody.SetVelocity(rigidbody.velocity.LerpLinear(targetSpeed, deltaTime * acceleration, axes), axes);
 					break;
 			}
 		}
 
-		public static void AccelerateTowards(this Rigidbody2D rigidbody, float targetAcceleration, float speed, float deltaTime, InterpolationModes interpolation = InterpolationModes.Quadratic, Axes axes = Axes.XY)
+		public static void AccelerateTowards(this Rigidbody2D rigidbody, float targetSpeed, float acceleration, float deltaTime, InterpolationModes interpolation = InterpolationModes.Quadratic, Axes axes = Axes.XY)
 		{
-			rigidbody.AccelerateTowards(new Vector2(targetAcceleration, targetAcceleration), speed, deltaTime, interpolation, axes);
+			rigidbody.AccelerateTowards(new Vector2(targetSpeed, targetSpeed), acceleration, deltaTime, interpolation, axes);
 		}
 
 		public static void OscillateVelocity(this Rigidbody2D rigidbody, Vector2 frequency, Vector2 amplitude, Vector2 center, Axes axes = Axes.XY)

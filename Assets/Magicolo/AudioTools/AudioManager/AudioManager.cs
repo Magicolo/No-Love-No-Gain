@@ -70,6 +70,7 @@ namespace Magicolo
 		void InitializeReference()
 		{
 			_reference = gameObject.FindOrAddChild("Reference").GetOrAddComponent<AudioSource>();
+			_reference.gameObject.SetActive(false);
 			_reference.playOnAwake = false;
 			_reference.spatialBlend = 1f;
 		}

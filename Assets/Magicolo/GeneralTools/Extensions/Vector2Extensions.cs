@@ -6,7 +6,7 @@ namespace Magicolo
 	public static class Vector2Extensions
 	{
 
-		const float epsilon = 0.001F;
+		const float _epsilon = 0.001F;
 
 		public static Vector2 SetValues(this Vector2 vector, Vector2 values, Axes axes)
 		{
@@ -33,8 +33,11 @@ namespace Magicolo
 
 		public static Vector2 Lerp(this Vector2 vector, Vector2 target, float time, Axes axes)
 		{
-			vector.x = axes.Contains(Axes.X) && Mathf.Abs(target.x - vector.x) > epsilon ? Mathf.Lerp(vector.x, target.x, time) : vector.x;
-			vector.y = axes.Contains(Axes.Y) && Mathf.Abs(target.y - vector.y) > epsilon ? Mathf.Lerp(vector.y, target.y, time) : vector.y;
+			if ((axes & Axes.X) != 0 && Mathf.Abs(target.x - vector.x) > _epsilon)
+				vector.x = Mathf.Lerp(vector.x, target.x, time);
+
+			if ((axes & Axes.Y) != 0 && Mathf.Abs(target.y - vector.y) > _epsilon)
+				vector.y = Mathf.Lerp(vector.y, target.y, time);
 
 			return vector;
 		}
@@ -71,8 +74,8 @@ namespace Magicolo
 
 		public static Vector2 LerpAngles(this Vector2 vector, Vector2 targetAngles, float time, Axes axes)
 		{
-			vector.x = axes.Contains(Axes.X) && Mathf.Abs(targetAngles.x - vector.x) > epsilon ? Mathf.LerpAngle(vector.x, targetAngles.x, time) : vector.x;
-			vector.y = axes.Contains(Axes.Y) && Mathf.Abs(targetAngles.y - vector.y) > epsilon ? Mathf.LerpAngle(vector.y, targetAngles.y, time) : vector.y;
+			vector.x = axes.Contains(Axes.X) && Mathf.Abs(targetAngles.x - vector.x) > _epsilon ? Mathf.LerpAngle(vector.x, targetAngles.x, time) : vector.x;
+			vector.y = axes.Contains(Axes.Y) && Mathf.Abs(targetAngles.y - vector.y) > _epsilon ? Mathf.LerpAngle(vector.y, targetAngles.y, time) : vector.y;
 
 			return vector;
 		}
