@@ -1,15 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System;
 using Magicolo;
 
 public class Crabs : DamageableBase {
 
-    //[Disable] public
+    [Disable]
+    public CrabPince[] pinces;
+
+    public enum CrabState {IDLE,CHARGING_ATTACK,ATTACKING};
+    [Disable] public CrabState crabState;
 
     public override void Die()
     {
-        //throw new NotImplementedException();
+        this.Destroy();
     }
 
     internal override void TakeDamage()
@@ -17,12 +20,11 @@ public class Crabs : DamageableBase {
         //throw new NotImplementedException();
     }
 
-    void Start () {
-	
-	}
-	
-	
-	void Update () {
-	
-	}
+    void Start ()
+    {
+        pinces = GetComponentsInChildren<CrabPince>();
+        
+    }
+
+    
 }
