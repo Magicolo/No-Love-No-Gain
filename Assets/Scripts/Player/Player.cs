@@ -37,12 +37,11 @@ public class Player : MonoBehaviourExtended
 
 	void Update()
 	{
-
+		UpdateGrounded();
 	}
 
 	void FixedUpdate()
 	{
-		UpdateGrounded();
 		UpdateMotion();
 		UpdateJump();
 	}
@@ -82,7 +81,10 @@ public class Player : MonoBehaviourExtended
 			Jump();
 
 		if (!IsJumping)
+		{
+			_jumpCounter = 0f;
 			return;
+		}
 
 		_jumpCounter -= Time.fixedDeltaTime;
 

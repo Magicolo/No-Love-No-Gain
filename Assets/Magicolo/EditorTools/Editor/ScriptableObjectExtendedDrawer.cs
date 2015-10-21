@@ -1,248 +1,248 @@
-﻿using UnityEngine;
-using UnityEditor;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Magicolo.EditorTools;
-using System.IO;
-using System.Reflection;
+﻿//using UnityEngine;
+//using UnityEditor;
+//using System;
+//using System.Collections;
+//using System.Collections.Generic;
+//using System.Linq;
+//using Magicolo.EditorTools;
+//using System.IO;
+//using System.Reflection;
 
-namespace Magicolo.EditorTools
-{
-	[CustomPropertyDrawer(typeof(ScriptableObjectExtended), true)]
-	public class ScriptableObjectExtendedDrawer : CustomPropertyDrawerBase
-	{
-		SerializedObject _serialized;
-		List<SerializedProperty> _toShow = new List<SerializedProperty>();
+//namespace Magicolo.EditorTools
+//{
+//	[CustomPropertyDrawer(typeof(ScriptableObjectExtended), true)]
+//	public class ScriptableObjectExtendedDrawer : CustomPropertyDrawerBase
+//	{
+//		SerializedObject _serialized;
+//		List<SerializedProperty> _toShow = new List<SerializedProperty>();
 
-		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-		{
-			Begin(position, property, label);
+//		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+//		{
+//			Begin(position, property, label);
 
-			ShowMain();
-			ShowProperties();
+//			ShowMain();
+//			ShowProperties();
 
-			End();
-		}
+//			End();
+//		}
 
-		void ShowMain()
-		{
-			_currentPosition.height = EditorGUI.GetPropertyHeight(_currentProperty, _currentLabel, true);
+//		void ShowMain()
+//		{
+//			_currentPosition.height = EditorGUI.GetPropertyHeight(_currentProperty, _currentLabel, true);
 
-			ShowContextMenu();
+//			ShowContextMenu();
 
-			if (_currentProperty.objectReferenceValue != null)
-				CustomEditorBase.DragArea(EditorGUI.IndentedRect(_currentPosition), _currentProperty.objectReferenceValue);
+//			if (_currentProperty.objectReferenceValue != null)
+//				CustomEditorBase.DragArea(EditorGUI.IndentedRect(_currentPosition), _currentProperty.objectReferenceValue);
 
-			EditorGUI.PropertyField(_currentPosition, _currentProperty);
-		}
+//			EditorGUI.PropertyField(_currentPosition, _currentProperty);
+//		}
 
-		void ShowContextMenu()
-		{
-			Type referenceType = fieldInfo.FieldType.IsArray ? fieldInfo.FieldType.GetElementType() : fieldInfo.FieldType;
-			Type[] derivedTypes = referenceType.GetAssignableTypes();
+//		void ShowContextMenu()
+//		{
+//			Type referenceType = fieldInfo.FieldType.IsArray ? fieldInfo.FieldType.GetElementType() : fieldInfo.FieldType;
+//			Type[] derivedTypes = referenceType.GetAssignableTypes();
 
-			List<GUIContent> options = new List<GUIContent>();
-			List<GenericMenu.MenuFunction2> callbacks = new List<GenericMenu.MenuFunction2>();
-			List<Type> data = new List<Type>();
+//			List<GUIContent> options = new List<GUIContent>();
+//			List<GenericMenu.MenuFunction2> callbacks = new List<GenericMenu.MenuFunction2>();
+//			List<Type> data = new List<Type>();
 
-			for (int i = 0; i < derivedTypes.Length; i++)
-			{
-				Type derivedType = derivedTypes[i];
+//			for (int i = 0; i < derivedTypes.Length; i++)
+//			{
+//				Type derivedType = derivedTypes[i];
 
-				options.Add(("Create/" + derivedType.GetName()).ToGUIContent());
-				callbacks.Add(OnContextCreate);
-				data.Add(derivedType);
-			}
+//				options.Add(("Create/" + derivedType.GetName()).ToGUIContent());
+//				callbacks.Add(OnContextCreate);
+//				data.Add(derivedType);
+//			}
 
-			if (_currentProperty.objectReferenceValue != null)
-			{
-				options.Add("Remove".ToGUIContent());
-				callbacks.Add(OnContextRemove);
-				data.Add(null);
-			}
+//			if (_currentProperty.objectReferenceValue != null)
+//			{
+//				options.Add("Remove".ToGUIContent());
+//				callbacks.Add(OnContextRemove);
+//				data.Add(null);
+//			}
 
-			CustomEditorBase.ContextMenu(_currentPosition, options.ToArray(), callbacks.ToArray(), data.ToArray());
-		}
+//			CustomEditorBase.ContextMenu(_currentPosition, options.ToArray(), callbacks.ToArray(), data.ToArray());
+//		}
 
-		void ShowProperties()
-		{
-			if (_serialized == null)
-				return;
+//		void ShowProperties()
+//		{
+//			if (_serialized == null)
+//				return;
 
-			EditorGUI.BeginChangeCheck();
+//			EditorGUI.BeginChangeCheck();
 
-			_currentProperty.isExpanded = EditorGUI.Foldout(_currentPosition, _currentProperty.isExpanded, GUIContent.none);
-			_currentPosition.y += _currentPosition.height;
+//			_currentProperty.isExpanded = EditorGUI.Foldout(_currentPosition, _currentProperty.isExpanded, GUIContent.none);
+//			_currentPosition.y += _currentPosition.height;
 
-			if (_currentProperty.isExpanded)
-			{
-				SerializedProperty iterator = _serialized.GetIterator();
+//			if (_currentProperty.isExpanded)
+//			{
+//				SerializedProperty iterator = _serialized.GetIterator();
 
-				iterator = _serialized.GetIterator();
-				iterator.NextVisible(true);
+//				iterator = _serialized.GetIterator();
+//				iterator.NextVisible(true);
 
-				EditorGUI.indentLevel += 1;
-				int currentIndent = EditorGUI.indentLevel;
+//				EditorGUI.indentLevel += 1;
+//				int currentIndent = EditorGUI.indentLevel;
 
-				while (iterator.NextVisible(iterator.isExpanded))
-				{
-					_currentPosition.height = EditorGUI.GetPropertyHeight(iterator, iterator.ToGUIContent(), false);
+//				while (iterator.NextVisible(iterator.isExpanded))
+//				{
+//					_currentPosition.height = EditorGUI.GetPropertyHeight(iterator, iterator.ToGUIContent(), false);
 
-					EditorGUI.indentLevel = currentIndent + iterator.depth;
-					EditorGUI.PropertyField(_currentPosition, iterator);
+//					EditorGUI.indentLevel = currentIndent + iterator.depth;
+//					EditorGUI.PropertyField(_currentPosition, iterator);
 
-					_currentPosition.y += _currentPosition.height;
-				}
+//					_currentPosition.y += _currentPosition.height;
+//				}
 
-				EditorGUI.indentLevel = currentIndent;
-				EditorGUI.indentLevel -= 1;
-			}
+//				EditorGUI.indentLevel = currentIndent;
+//				EditorGUI.indentLevel -= 1;
+//			}
 
-			if (EditorGUI.EndChangeCheck())
-				_serialized.ApplyModifiedProperties();
-		}
+//			if (EditorGUI.EndChangeCheck())
+//				_serialized.ApplyModifiedProperties();
+//		}
 
-		public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-		{
-			float height = base.GetPropertyHeight(property, label);
-			_serialized = property.objectReferenceValue == null ? null : new SerializedObject(property.objectReferenceValue);
-			_toShow.Clear();
+//		public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+//		{
+//			float height = base.GetPropertyHeight(property, label);
+//			_serialized = property.objectReferenceValue == null ? null : new SerializedObject(property.objectReferenceValue);
+//			_toShow.Clear();
 
-			if (property.isExpanded && _serialized != null)
-			{
-				SerializedProperty iterator = _serialized.GetIterator();
+//			if (property.isExpanded && _serialized != null)
+//			{
+//				SerializedProperty iterator = _serialized.GetIterator();
 
-				iterator = _serialized.GetIterator();
-				iterator.NextVisible(true);
+//				iterator = _serialized.GetIterator();
+//				iterator.NextVisible(true);
 
-				while (iterator.NextVisible(iterator.isExpanded))
-					height += EditorGUI.GetPropertyHeight(iterator, iterator.ToGUIContent(), false);
-			}
+//				while (iterator.NextVisible(iterator.isExpanded))
+//					height += EditorGUI.GetPropertyHeight(iterator, iterator.ToGUIContent(), false);
+//			}
 
-			return height;
-		}
+//			return height;
+//		}
 
-		void OnContextCreate(object data)
-		{
-			UnityEngine.Object instance = ScriptableObject.CreateInstance(data as Type);
-			instance.name = "";
-			string extension = Path.GetExtension(AssetDatabase.GetAssetPath(_target)).ToLower();
+//		void OnContextCreate(object data)
+//		{
+//			UnityEngine.Object instance = ScriptableObject.CreateInstance(data as Type);
+//			instance.name = "";
+//			string extension = Path.GetExtension(AssetDatabase.GetAssetPath(_target)).ToLower();
 
-			if (extension == ".prefab")
-				AssetDatabase.AddObjectToAsset(instance, _target);
-			else if (extension == ".asset")
-			{
-				AssetDatabase.AddObjectToAsset(instance, _target);
-			}
+//			if (extension == ".prefab")
+//				AssetDatabase.AddObjectToAsset(instance, _target);
+//			else if (extension == ".asset")
+//			{
+//				AssetDatabase.AddObjectToAsset(instance, _target);
+//			}
 
-			_currentProperty.SetValue(instance);
-		}
+//			_currentProperty.SetValue(instance);
+//		}
 
-		void OnContextRemove(object data)
-		{
-			_currentProperty.SetValue(null);
-		}
+//		void OnContextRemove(object data)
+//		{
+//			_currentProperty.SetValue(null);
+//		}
 
-		void OnDropped(UnityEngine.Object dropped)
-		{
-			_currentProperty.SetValue(dropped);
-		}
+//		void OnDropped(UnityEngine.Object dropped)
+//		{
+//			_currentProperty.SetValue(dropped);
+//		}
 
-		[UnityEditor.Callbacks.DidReloadScripts, InitializeOnLoadMethod]
-		static void OnScriptReload()
-		{
-			PrefabUtility.prefabInstanceUpdated += OnPrefabUpdated;
-		}
+//		[UnityEditor.Callbacks.DidReloadScripts, InitializeOnLoadMethod]
+//		static void OnScriptReload()
+//		{
+//			PrefabUtility.prefabInstanceUpdated += OnPrefabUpdated;
+//		}
 
-		static void OnPrefabUpdated(GameObject obj)
-		{
-			GameObject prefab = PrefabUtility.GetPrefabParent(obj) as GameObject;
-			string prefabPath = AssetDatabase.GetAssetPath(prefab);
-			MonoBehaviour[] objBehaviours = obj.GetComponents<MonoBehaviour>();
-			MonoBehaviour[] prefabBehaviours = prefab.GetComponents<MonoBehaviour>();
-			UnityEngine.Object[] assets = AssetDatabase.LoadAllAssetsAtPath(prefabPath);
-			bool refresh = false;
+//		static void OnPrefabUpdated(GameObject obj)
+//		{
+//			GameObject prefab = PrefabUtility.GetPrefabParent(obj) as GameObject;
+//			string prefabPath = AssetDatabase.GetAssetPath(prefab);
+//			MonoBehaviour[] objBehaviours = obj.GetComponents<MonoBehaviour>();
+//			MonoBehaviour[] prefabBehaviours = prefab.GetComponents<MonoBehaviour>();
+//			UnityEngine.Object[] assets = AssetDatabase.LoadAllAssetsAtPath(prefabPath);
+//			bool refresh = false;
 
-			// Destroy existing ScriptableObjects
-			for (int i = 0; i < assets.Length; i++)
-			{
-				UnityEngine.Object asset = assets[i];
+//			// Destroy existing ScriptableObjects
+//			for (int i = 0; i < assets.Length; i++)
+//			{
+//				UnityEngine.Object asset = assets[i];
 
-				if (asset != null && asset is ScriptableObject)
-				{
-					asset.Destroy(true);
-					assets[i] = null;
-				}
-			}
+//				if (asset != null && asset is ScriptableObject)
+//				{
+//					asset.Destroy(true);
+//					assets[i] = null;
+//				}
+//			}
 
-			// Create new ScriptableObjects
-			for (int i = 0; i < objBehaviours.Length; i++)
-			{
-				MonoBehaviour behaviour = objBehaviours[i];
-				SerializedObject behaviourSerialized = new SerializedObject(behaviour);
-				Dictionary<SerializedProperty, string> scriptableProperties = new Dictionary<SerializedProperty, string>();
-				FillScriptableObjectProperties(scriptableProperties, behaviourSerialized.GetIterator(), behaviour.GetType().Name, new List<ScriptableObject>());
+//			// Create new ScriptableObjects
+//			for (int i = 0; i < objBehaviours.Length; i++)
+//			{
+//				MonoBehaviour behaviour = objBehaviours[i];
+//				SerializedObject behaviourSerialized = new SerializedObject(behaviour);
+//				Dictionary<SerializedProperty, string> scriptableProperties = new Dictionary<SerializedProperty, string>();
+//				FillScriptableObjectProperties(scriptableProperties, behaviourSerialized.GetIterator(), behaviour.GetType().Name, new List<ScriptableObject>());
 
-				foreach (KeyValuePair<SerializedProperty, string> pair in scriptableProperties)
-				{
-					ScriptableObject scriptable = pair.Key.GetValue<ScriptableObject>();
-					ScriptableObject scriptableClone = null;
+//				foreach (KeyValuePair<SerializedProperty, string> pair in scriptableProperties)
+//				{
+//					ScriptableObject scriptable = pair.Key.GetValue<ScriptableObject>();
+//					ScriptableObject scriptableClone = null;
 
-					if (scriptable != null)
-					{
-						scriptable.name = pair.Value;
-						scriptableClone = UnityEngine.Object.Instantiate(scriptable);
-						scriptableClone.name = pair.Value;
-						refresh = true;
-						AssetDatabase.AddObjectToAsset(scriptableClone, prefab);
-					}
+//					if (scriptable != null)
+//					{
+//						scriptable.name = pair.Value;
+//						scriptableClone = UnityEngine.Object.Instantiate(scriptable);
+//						scriptableClone.name = pair.Value;
+//						refresh = true;
+//						AssetDatabase.AddObjectToAsset(scriptableClone, prefab);
+//					}
 
-					// Set the field on the prefab MonoBehaviour
-					string fieldPath = pair.Value.Split('.').Concat(".", 1);
-					prefabBehaviours[i].SetValueToMemberAtPath(fieldPath, scriptableClone);
-				}
-			}
+//					// Set the field on the prefab MonoBehaviour
+//					string fieldPath = pair.Value.Split('.').Concat(".", 1);
+//					prefabBehaviours[i].SetValueToMemberAtPath(fieldPath, scriptableClone);
+//				}
+//			}
 
-			if (refresh)
-				AssetDatabase.Refresh();
-		}
+//			if (refresh)
+//				AssetDatabase.Refresh();
+//		}
 
-		static void FillScriptableObjectProperties(Dictionary<SerializedProperty, string> properties, SerializedProperty iterator, string parentPath, List<ScriptableObject> toIgnore)
-		{
-			iterator.NextVisible(true);
-			iterator.NextVisible(true);
+//		static void FillScriptableObjectProperties(Dictionary<SerializedProperty, string> properties, SerializedProperty iterator, string parentPath, List<ScriptableObject> toIgnore)
+//		{
+//			iterator.NextVisible(true);
+//			iterator.NextVisible(true);
 
-			while (iterator.NextVisible(true))
-			{
-				FieldInfo field = null;
+//			while (iterator.NextVisible(true))
+//			{
+//				FieldInfo field = null;
 
-				try
-				{
-					field = iterator.serializedObject.targetObject.GetMemberInfoAtPath(iterator.GetAdjustedPath()) as FieldInfo;
-				}
-				catch { }
+//				try
+//				{
+//					field = iterator.serializedObject.targetObject.GetMemberInfoAtPath(iterator.GetAdjustedPath()) as FieldInfo;
+//				}
+//				catch { }
 
-				if (field == null)
-					continue;
+//				if (field == null)
+//					continue;
 
-				if (typeof(ScriptableObject).IsAssignableFrom(field.FieldType))
-				{
-					string path = parentPath + "." + iterator.GetAdjustedPath();
-					properties[iterator.serializedObject.FindProperty(iterator.propertyPath)] = path;
+//				if (typeof(ScriptableObject).IsAssignableFrom(field.FieldType))
+//				{
+//					string path = parentPath + "." + iterator.GetAdjustedPath();
+//					properties[iterator.serializedObject.FindProperty(iterator.propertyPath)] = path;
 
-					ScriptableObject value = field.GetValue<ScriptableObject>(iterator.serializedObject.targetObject);
+//					ScriptableObject value = field.GetValue<ScriptableObject>(iterator.serializedObject.targetObject);
 
-					if (value != null && !toIgnore.Contains(value))
-					{
-						toIgnore.Add(value);
-						SerializedObject valueSerialized = new SerializedObject(value);
+//					if (value != null && !toIgnore.Contains(value))
+//					{
+//						toIgnore.Add(value);
+//						SerializedObject valueSerialized = new SerializedObject(value);
 
-						FillScriptableObjectProperties(properties, valueSerialized.GetIterator(), path, toIgnore);
-					}
-				}
-			}
-		}
-	}
-}
+//						FillScriptableObjectProperties(properties, valueSerialized.GetIterator(), path, toIgnore);
+//					}
+//				}
+//			}
+//		}
+//	}
+//}
