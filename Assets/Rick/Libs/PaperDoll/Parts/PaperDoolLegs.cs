@@ -5,7 +5,7 @@ using System;
 
 public class PaperDoolLegs : PaperDollPart {
 
-    float distToGround;
+    //float distToGround;
     public GroundCastSettings2D raySettings;
     public Force2 gravity;
 
@@ -41,7 +41,7 @@ public class PaperDoolLegs : PaperDollPart {
     void Start()
     {
         base.Init();
-        distToGround = GetComponent<BoxCollider2D>().size.y / 2 + 0.5f;
+        //distToGround = GetComponent<BoxCollider2D>().size.y / 2 + 0.5f;
     }
 
     

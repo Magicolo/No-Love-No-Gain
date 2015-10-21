@@ -146,7 +146,7 @@ namespace RickTools.MapLoader{
 		void showTiles(params int[] tiles){
 			int x = 0;
 			foreach (var index in tiles) {
-				Rect showRect = new Rect(startRect.left + x * 32 , startRect.top, 32,32);
+				Rect showRect = new Rect(startRect.x + x * 32 , startRect.y, 32,32);
 				showTile(showRect, index);
 				x++;
 			}
