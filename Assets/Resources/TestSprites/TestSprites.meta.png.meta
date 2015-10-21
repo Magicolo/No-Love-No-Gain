@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 8c8a25a6ea3544541b745f8a63f9318b
-timeCreated: 1445270613
+timeCreated: 1445452166
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -15,6 +15,7 @@ TextureImporter:
     21300016: TestSprites.meta_8
     21300018: TestSprites.meta_9
     21300020: TestSprites.meta_10
+    21300022: TestSprites.meta_11
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -165,6 +166,16 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TestSprites.meta_11
+      rect:
+        serializedVersion: 2
+        x: 96
         y: 0
         width: 32
         height: 32

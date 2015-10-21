@@ -3,7 +3,6 @@ using UnityEditor;
 using UnityEngine;
 using Magicolo;
 using UnityEngine.UI;
-using Magicolo.EditorTools;
 
 namespace RickEditor.Editor{
     public class RickWindow<T> : CustomWindowBase<T> where T : RickWindow<T> 
@@ -71,8 +70,8 @@ namespace RickEditor.Editor{
 			return EditorGUILayout.Toggle(title, value);
 		}
 			
-		protected T makeObjectField<T>(string title, Object obj, bool allowSceneOject = true) where T : Object{
-			return (T) EditorGUILayout.ObjectField(title, obj,typeof(T),allowSceneOject);
+		protected R makeObjectField<R>(string title, Object obj, bool allowSceneOject = true) where R : Object{
+			return (R) EditorGUILayout.ObjectField(title, obj,typeof(R),allowSceneOject);
 		}
 		
 		public void makeHelp(string text){
