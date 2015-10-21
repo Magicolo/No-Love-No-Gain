@@ -7,16 +7,7 @@ using Magicolo;
 
 public class Player : MonoBehaviourExtended
 {
-	[Min]
-	public float MoveSpeed;
-	[Min]
-	public float MoveAcceleration;
-	[Min(BeforeSeparator = true)]
-	public float JumpMinHeight = 1;
-	[Min]
-	public float JumpMaxHeight = 30;
-	[Min]
-	public float JumpDuration = 0.25F;
+	public CharacterStats Stats;
 	public GroundCastSettings2D GroundedSettings;
 	[Empty(BeforeSeparator = true)]
 	public Rigidbody2D Rigidbody;
@@ -54,20 +45,20 @@ public class Player : MonoBehaviourExtended
 
 	void UpdateMotion()
 	{
-		_currentSpeed = Input.GetAxis("MotionX") * MoveSpeed;
+		_currentSpeed = Input.GetAxis("MotionX") * Stats.MoveSpeed;
 
 		if (Gravity.Angle == 90f)
-			Rigidbody.AccelerateTowards(_currentSpeed, MoveAcceleration, Kronos.Player.FixedDeltaTime, axes: Axes.X);
+			Rigidbody.AccelerateTowards(_currentSpeed, Stats.MoveAcceleration, Kronos.Player.FixedDeltaTime, axes: Axes.X);
 		else if (Gravity.Angle == 180f)
-			Rigidbody.AccelerateTowards(-_currentSpeed, MoveAcceleration, Kronos.Player.FixedDeltaTime, axes: Axes.Y);
+			Rigidbody.AccelerateTowards(-_currentSpeed, Stats.MoveAcceleration, Kronos.Player.FixedDeltaTime, axes: Axes.Y);
 		else if (Gravity.Angle == 270f)
-			Rigidbody.AccelerateTowards(-_currentSpeed, MoveAcceleration, Kronos.Player.FixedDeltaTime, axes: Axes.X);
+			Rigidbody.AccelerateTowards(-_currentSpeed, Stats.MoveAcceleration, Kronos.Player.FixedDeltaTime, axes: Axes.X);
 		else if (Gravity.Angle == 0f)
-			Rigidbody.AccelerateTowards(_currentSpeed, MoveAcceleration, Kronos.Player.FixedDeltaTime, axes: Axes.Y);
+			Rigidbody.AccelerateTowards(_currentSpeed, Stats.MoveAcceleration, Kronos.Player.FixedDeltaTime, axes: Axes.Y);
 		else
 		{
 			Vector3 relativeVelocity = Gravity.WorldToRelative(Rigidbody.velocity);
-			relativeVelocity.x = Mathf.Lerp(relativeVelocity.x, _currentSpeed, Kronos.Player.FixedDeltaTime * MoveAcceleration);
+			relativeVelocity.x = Mathf.Lerp(relativeVelocity.x, _currentSpeed, Kronos.Player.FixedDeltaTime * Stats.MoveAcceleration);
 
 			Rigidbody.SetVelocity(Gravity.RelativeToWorld(relativeVelocity));
 		}
@@ -89,28 +80,28 @@ public class Player : MonoBehaviourExtended
 		_jumpCounter -= Time.fixedDeltaTime;
 
 		if (_jumpCounter > 0)
-			Rigidbody.Accelerate(_jumpDirection * _jumpIncrement * (_jumpCounter / JumpDuration), Axes.XY);
+			Rigidbody.Accelerate(_jumpDirection * _jumpIncrement * (_jumpCounter / Stats.JumpMaxDuration), Axes.XY);
 	}
 
 	public void Jump()
 	{
 		if (Gravity.Angle == 90)
-			Rigidbody.SetVelocity(JumpMinHeight, Axes.Y);
+			Rigidbody.SetVelocity(Stats.JumpMinHeight, Axes.Y);
 		else if (Gravity.Angle == 180)
-			Rigidbody.SetVelocity(JumpMinHeight, Axes.X);
+			Rigidbody.SetVelocity(Stats.JumpMinHeight, Axes.X);
 		else if (Gravity.Angle == 270)
-			Rigidbody.SetVelocity(-JumpMinHeight, Axes.Y);
+			Rigidbody.SetVelocity(-Stats.JumpMinHeight, Axes.Y);
 		else if (Gravity.Angle == 0)
-			Rigidbody.SetVelocity(-JumpMinHeight, Axes.X);
+			Rigidbody.SetVelocity(-Stats.JumpMinHeight, Axes.X);
 		else
 		{
 			Vector2 relativeVelocity = Gravity.WorldToRelative(Rigidbody.velocity);
-			relativeVelocity.y = JumpMinHeight;
+			relativeVelocity.y = Stats.JumpMinHeight;
 			Rigidbody.SetVelocity(Gravity.RelativeToWorld(relativeVelocity));
 		}
 
-		_jumpIncrement = (JumpMaxHeight - JumpMinHeight) / JumpDuration;
+		_jumpIncrement = (Stats.JumpMaxHeight - Stats.JumpMinHeight) / Stats.JumpMaxDuration;
 		_jumpDirection = -Gravity.Direction;
-		_jumpCounter = JumpDuration;
+		_jumpCounter = Stats.JumpMaxDuration;
 	}
 }
