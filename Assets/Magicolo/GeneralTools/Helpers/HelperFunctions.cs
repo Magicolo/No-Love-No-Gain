@@ -7,17 +7,15 @@ namespace Magicolo
 {
 	public static class HelperFunctions
 	{
-		static System.Random randomGenerator;
+		static System.Random _randomGenerator;
 		public static System.Random RandomGenerator
 		{
 			get
 			{
-				if (randomGenerator == null)
-				{
-					randomGenerator = new System.Random(System.DateTime.Now.Millisecond * System.DateTime.Now.Second * System.DateTime.Now.Minute);
-				}
+				if (_randomGenerator == null)
+					_randomGenerator = new System.Random(System.DateTime.Now.Millisecond * System.DateTime.Now.Second * System.DateTime.Now.Minute);
 
-				return randomGenerator;
+				return _randomGenerator;
 			}
 		}
 
@@ -82,25 +80,15 @@ namespace Magicolo
 			string extension = "";
 
 			if (typeof(T) == typeof(Material))
-			{
 				extension = ".mat";
-			}
 			else if (typeof(T) == typeof(Cubemap))
-			{
 				extension = ".cubemap";
-			}
 			else if (typeof(T) == typeof(GUISkin))
-			{
 				extension = ".GUISkin";
-			}
 			else if (typeof(T) == typeof(Animation))
-			{
 				extension = ".anim";
-			}
 			else
-			{
 				extension = ".asset";
-			}
 
 			return extension;
 		}
@@ -140,9 +128,7 @@ namespace Magicolo
 			foreach (Object asset in GetDefaultAssetsOfType<T>())
 			{
 				if (asset.name == assetName)
-				{
 					defaultAsset = asset as T;
-				}
 			}
 
 			return defaultAsset;
@@ -420,9 +406,7 @@ namespace Magicolo
 			for (int i = 0; i < weightSums.Length; i++)
 			{
 				if (randomValue < weightSums[i])
-				{
 					return objects[i];
-				}
 			}
 
 			return default(T);
