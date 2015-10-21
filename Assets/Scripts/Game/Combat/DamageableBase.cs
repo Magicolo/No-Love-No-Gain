@@ -9,7 +9,16 @@ public abstract class DamageableBase : MonoBehaviour, IDamageable {
     public float Hp;
     public DamageType VulnerableDamageType;
 
-    public void Damage(Transform source, float damage, float knockbackForce, DamageType attackType)
+    internal abstract void TakeDamage();
+
+    public bool CanBeDamagedBy(DamageType attack)
+    {
+        return VulnerableDamageType.CanBeDamagedBy(attack);
+    }
+
+    public abstract void Die();
+
+    public void Damage(float damage, DamageType attackType, float knockbackForce = 0, Vector2 knowbackForce = default(Vector2))
     {
         if (CanBeDamagedBy(attackType))
         {
@@ -17,19 +26,10 @@ public abstract class DamageableBase : MonoBehaviour, IDamageable {
             if (Hp < 0)
             {
                 Die();
-            } else {
+            } else
+            {
                 TakeDamage();
             }
         }
-        
     }
-
-    internal abstract void TakeDamage();
-
-    public bool CanBeDamagedBy(DamageType attack)
-    {
-        return VulnerableDamageType.MatchOneFrom(attack);
-    }
-
-    public abstract void Die();
 }

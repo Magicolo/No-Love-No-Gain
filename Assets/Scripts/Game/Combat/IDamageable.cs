@@ -3,6 +3,7 @@ using System.Collections;
 
 public interface IDamageable {
 
-    void Damage(Transform source, float damage, float knockbackForce, DamageType attackType);
+
+    void Damage(float damage, DamageType attackType, float knockbackForce = 0, Vector2 knowbackForce = default (Vector2));
 	
 }

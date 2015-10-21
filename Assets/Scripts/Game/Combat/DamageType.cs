@@ -7,7 +7,7 @@ public class DamageType {
     public bool Crabs;
     public bool Population;
 
-    public bool MatchOneFrom(DamageType other)
+    public bool CanBeDamagedBy(DamageType other)
     {
         return other.God 
             || (Heart && other.Heart)
