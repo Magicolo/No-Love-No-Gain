@@ -14,8 +14,4 @@ public class BuildingBase : DamageableBase
 	{
 		gameObject.Remove();
 	}
-
-	protected override void OnDamaged()
-	{
-	}
 }

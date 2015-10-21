@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Magicolo;
 
-public class Player : MonoBehaviourExtended
+public class Player : DamageableBase
 {
 	public CharacterStats Stats;
 	public GroundCastSettings2D GroundedSettings;
@@ -25,6 +25,11 @@ public class Player : MonoBehaviourExtended
 	public bool IsMoving { get; set; }
 	public bool IsGrounded { get; set; }
 	public bool IsJumping { get; set; }
+
+	void Start()
+	{
+		Hp = Stats.MaxHealth;
+	}
 
 	void Update()
 	{
@@ -103,5 +108,25 @@ public class Player : MonoBehaviourExtended
 		_jumpIncrement = (Stats.JumpMaxHeight - Stats.JumpMinHeight) / Stats.JumpMaxDuration;
 		_jumpDirection = -Gravity.Direction;
 		_jumpCounter = Stats.JumpMaxDuration;
+	}
+
+	public override bool CanBeDamagedBy(DamageSources damageSource)
+	{
+		switch (damageSource)
+		{
+			case DamageSources.Player:
+				return true;
+			case DamageSources.Crabs:
+				return true;
+			case DamageSources.Population:
+				return true;
+		}
+
+		return false;
+	}
+
+	public override void Die()
+	{
+
 	}
 }

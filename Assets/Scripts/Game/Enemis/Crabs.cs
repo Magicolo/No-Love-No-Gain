@@ -27,9 +27,4 @@ public class Crabs : DamageableBase
 	{
 		return false;
 	}
-
-	protected override void OnDamaged()
-	{
-
-	}
 }
