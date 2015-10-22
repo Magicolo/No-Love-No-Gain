@@ -31,20 +31,13 @@ public class PlayerFist : MonoBehaviourExtended
 		switch (_state)
 		{
 			case FistStates.Idle:
-				UpdateIdle();
 				break;
 			case FistStates.Punching:
 				UpdatePunching();
 				break;
 		}
 
-		transform.localPosition = transform.localPosition.Lerp(_targetPosition.ToVector3(), Kronos.Player.DeltaTime * Player.Stats.AttackSpeed * 2f, Axes.XY);
-	}
-
-	void UpdateIdle()
-	{
-		_targetPosition = _targetPosition.Oscillate(3f, 0.02f, 0f, Kronos.Player.Time, 0f, Axes.Y);
-		_targetPosition.x = 0f;
+		transform.localPosition = transform.localPosition.Lerp(_targetPosition.x, Kronos.Player.DeltaTime * Player.Stats.AttackSpeed * 2f, Axes.X);
 	}
 
 	void UpdatePunching()
@@ -70,6 +63,7 @@ public class PlayerFist : MonoBehaviourExtended
 		{
 			case FistStates.Idle:
 				Collider.enabled = false;
+				_targetPosition.x = 0f;
 				break;
 			case FistStates.Punching:
 				Collider.enabled = true;
@@ -80,7 +74,7 @@ public class PlayerFist : MonoBehaviourExtended
 
 	public void Punch()
 	{
-		_targetPosition = _targetPosition.SetValues(new Vector2(Player.Stats.Range, 0f), Axes.XY);
+		_targetPosition = _targetPosition.SetValues(Player.Stats.Range, Axes.X);
 
 		SetState(FistStates.Punching);
 	}

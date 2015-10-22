@@ -67,7 +67,7 @@ public class Character2DJumpJumping : State, IInputListener
 		Counter -= Time.fixedDeltaTime;
 
 		if (Counter > 0)
-			Layer.Rigidbody.Accelerate(Direction * Increment * (Counter / Duration), Axes.XY);
+			Layer.Rigidbody.Accelerate(Direction * Increment * (Counter / Duration), Time.fixedDeltaTime, Axes.XY);
 		else
 			SwitchState("Falling");
 	}

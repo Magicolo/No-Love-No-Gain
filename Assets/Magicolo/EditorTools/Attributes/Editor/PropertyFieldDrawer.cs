@@ -9,7 +9,6 @@ namespace Magicolo.EditorTools
 	[CustomPropertyDrawer(typeof(PropertyFieldAttribute))]
 	public class PropertyFieldDrawer : CustomAttributePropertyDrawerBase
 	{
-
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
 			drawPrefixLabel = false;
@@ -33,20 +32,16 @@ namespace Magicolo.EditorTools
 			EditorGUI.BeginChangeCheck();
 
 			if (drawerOverride == null)
-			{
 				EditorGUI.PropertyField(_currentPosition, property, label, true);
-			}
 			else
-			{
 				drawerOverride.OnGUI(_currentPosition, property, label);
-			}
 
 			if (EditorGUI.EndChangeCheck())
 			{
 				string propertyPath = property.GetAdjustedPath();
 				string[] propertyPathSplit = propertyPath.Split('.');
 
-				propertyPathSplit[propertyPathSplit.Length - 1] = propertyPathSplit.Last().Capitalized();
+				propertyPathSplit[propertyPathSplit.Length - 1] = propertyPathSplit.Last().Replace("_", "").Capitalized();
 				propertyPath = propertyPathSplit.Concat(".");
 				property.serializedObject.ApplyModifiedProperties();
 				Array.ForEach(_targets, t => t.SetValueToMemberAtPath(propertyPath, t.GetValueFromMemberAtPath(propertyPath)));
