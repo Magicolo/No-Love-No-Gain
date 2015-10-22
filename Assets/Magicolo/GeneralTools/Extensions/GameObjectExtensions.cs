@@ -183,9 +183,9 @@ namespace Magicolo
 			return parent != null ? parent.GetComponentsInParent(componentType) : new Component[0];
 		}
 
-		public static T FindComponent<T>(this GameObject gameObject) where T : Component
+		public static T FindComponent<T>(this GameObject gameObject) where T : class
 		{
-			return (T)gameObject.FindComponent(typeof(T));
+			return gameObject.FindComponent(typeof(T)) as T;
 		}
 
 		public static Component FindComponent(this GameObject gameObject, Type componentType)
@@ -203,9 +203,9 @@ namespace Magicolo
 			return component;
 		}
 
-		public static T[] FindComponents<T>(this GameObject gameObject) where T : Component
+		public static T[] FindComponents<T>(this GameObject gameObject) where T : class
 		{
-			return (T[])gameObject.FindComponents(typeof(T));
+			return gameObject.FindComponents(typeof(T)) as T[];
 		}
 
 		public static Component[] FindComponents(this GameObject gameObject, Type componentType)

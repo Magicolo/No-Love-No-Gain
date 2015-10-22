@@ -56,7 +56,7 @@ namespace Magicolo
 			return component.gameObject.GetComponentsInParentExclusive(componentType);
 		}
 
-		public static T FindComponent<T>(this Component component) where T : Component
+		public static T FindComponent<T>(this Component component) where T : class
 		{
 			return component.gameObject.FindComponent<T>();
 		}
@@ -66,7 +66,7 @@ namespace Magicolo
 			return component.gameObject.FindComponent(componentType);
 		}
 
-		public static T[] FindComponents<T>(this Component component) where T : Component
+		public static T[] FindComponents<T>(this Component component) where T : class
 		{
 			return component.gameObject.FindComponents<T>();
 		}
