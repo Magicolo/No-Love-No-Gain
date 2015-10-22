@@ -116,7 +116,7 @@ public class Player : DamageableBase
 
 	public void Punch(Collider2D collision)
 	{
-		IDamageable damageable = collision.GetComponent<IDamageable>();
+		IDamageable damageable = collision.FindComponent<IDamageable>();
 
 		if (damageable != null && damageable.CanBeDamagedBy(DamageSources.Player))
 			damageable.Damage(Stats.Damage, DamageSources.Player, GetKnockback(collision.transform));
@@ -142,6 +142,13 @@ public class Player : DamageableBase
 		_jumpIncrement = (Stats.JumpMaxHeight - Stats.JumpMinHeight) / Stats.JumpMaxDuration;
 		_jumpDirection = -Gravity.Direction;
 		_jumpCounter = Stats.JumpMaxDuration;
+	}
+
+	public override void Damage(float damage, DamageSources damageSource, Vector2 knockback = default(Vector2))
+	{
+		base.Damage(damage, damageSource, knockback);
+
+		Rigidbody.AddForce(knockback);
 	}
 
 	public override bool CanBeDamagedBy(DamageSources damageSource)

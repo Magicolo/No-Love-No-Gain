@@ -43,7 +43,8 @@ public class PlayerFist : MonoBehaviourExtended
 
 	void UpdateIdle()
 	{
-		_targetPosition = _targetPosition.Oscillate(3f, 0.02f, 0f, Kronos.Player.Time, 0f, Axes.XY);
+		_targetPosition = _targetPosition.Oscillate(3f, 0.02f, 0f, Kronos.Player.Time, 0f, Axes.Y);
+		_targetPosition.x = 0f;
 	}
 
 	void UpdatePunching()
