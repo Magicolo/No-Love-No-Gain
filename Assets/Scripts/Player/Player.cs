@@ -42,6 +42,11 @@ public class Player : DamageableBase
 		UpdateJump();
 	}
 
+	void OnTriggerEnter2D(Collider2D collision)
+	{
+
+	}
+
 	void UpdateGrounded()
 	{
 		GroundedSettings.Angle = Gravity.Angle - 90;
