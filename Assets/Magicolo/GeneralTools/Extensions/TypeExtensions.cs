@@ -178,6 +178,6 @@ namespace Magicolo
 			AssignableTypesDict = new Dictionary<Type, Type[]>();
 			SubclassTypes = new Dictionary<Type, Type[]>();
 		}
-	}
 #endif
+	}
 }
