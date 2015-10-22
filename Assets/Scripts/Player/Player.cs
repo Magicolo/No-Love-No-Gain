@@ -9,6 +9,7 @@ public class Player : DamageableBase
 {
 	public CharacterStats Stats;
 	public GroundCastSettings2D GroundedSettings;
+	public PlayerFist[] Fists;
 	[Empty(BeforeSeparator = true)]
 	public Rigidbody2D Rigidbody;
 	public Gravity2D Gravity;
@@ -16,23 +17,27 @@ public class Player : DamageableBase
 	public SpriteRenderer Renderer;
 	public InputHandler InputHandler;
 
-	float _motionX;
 	float _currentSpeed;
+	int _direction;
 	float _jumpCounter;
 	float _jumpIncrement;
 	Vector2 _jumpDirection;
+	float _attackSpeedCounter;
+	int _currentFist;
 
 	public bool IsMoving { get; set; }
 	public bool IsGrounded { get; set; }
 	public bool IsJumping { get; set; }
+	public bool IsAttacking { get; set; }
 
 	void Start()
 	{
-		Hp = Stats.MaxHealth;
+		Health = Stats.MaxHealth;
 	}
 
 	void Update()
 	{
+		UpdatePunch();
 		UpdateGrounded();
 	}
 
@@ -42,9 +47,16 @@ public class Player : DamageableBase
 		UpdateJump();
 	}
 
-	void OnTriggerEnter2D(Collider2D collision)
+	void UpdatePunch()
 	{
+		_attackSpeedCounter -= Kronos.Player.DeltaTime;
 
+		if (_attackSpeedCounter <= 0f && InputHandler.GetButtonDown("Punch"))
+		{
+			Fists[_currentFist].Punch();
+			_attackSpeedCounter = 1f / Stats.AttackSpeed;
+			_currentFist = (_currentFist + 1) % Fists.Length;
+		}
 	}
 
 	void UpdateGrounded()
@@ -56,6 +68,8 @@ public class Player : DamageableBase
 	void UpdateMotion()
 	{
 		_currentSpeed = InputHandler.GetAxis("MotionX") * Stats.MoveSpeed;
+		_direction = _currentSpeed != 0f ? _currentSpeed.Sign() : _direction;
+		IsMoving = Mathf.Abs(_currentSpeed) > Stats.MoveSpeed / 1000f;
 
 		if (Gravity.Angle == 90f)
 			Rigidbody.AccelerateTowards(_currentSpeed, Stats.MoveAcceleration, Kronos.Player.FixedDeltaTime, axes: Axes.X);
@@ -72,6 +86,8 @@ public class Player : DamageableBase
 
 			Rigidbody.SetVelocity(Gravity.RelativeToWorld(relativeVelocity));
 		}
+
+		transform.RotateLocalTowards(_direction == 1 ? 0f : 180f, Kronos.Player.DeltaTime * Stats.RotateSpeed, axes: Axes.Y);
 	}
 
 	void UpdateJump()
@@ -91,6 +107,19 @@ public class Player : DamageableBase
 
 		if (_jumpCounter > 0)
 			Rigidbody.Accelerate(_jumpDirection * _jumpIncrement * (_jumpCounter / Stats.JumpMaxDuration), Axes.XY);
+	}
+
+	Vector2 GetKnockback(Transform target)
+	{
+		return (target.position - transform.position).normalized * Stats.Knockback;
+	}
+
+	public void Punch(Collider2D collision)
+	{
+		IDamageable damageable = collision.GetComponent<IDamageable>();
+
+		if (damageable != null && damageable.CanBeDamagedBy(DamageSources.Player))
+			damageable.Damage(Stats.Damage, DamageSources.Player, GetKnockback(collision.transform));
 	}
 
 	public void Jump()

@@ -47,24 +47,14 @@ namespace Magicolo
 			rigidbody.AccelerateTowards(new Vector2(targetSpeed, targetSpeed), acceleration, deltaTime, interpolation, axes);
 		}
 
-		public static void OscillateVelocity(this Rigidbody2D rigidbody, Vector2 frequency, Vector2 amplitude, Vector2 center, Axes axes = Axes.XY)
+		public static void OscillateVelocity(this Rigidbody2D rigidbody, Vector2 frequency, Vector2 amplitude, Vector2 center, float time, Axes axes = Axes.XY)
 		{
-			rigidbody.SetVelocity(rigidbody.velocity.Oscillate(frequency, amplitude, center, rigidbody.GetInstanceID() / 1000, axes), axes);
+			rigidbody.SetVelocity(rigidbody.velocity.Oscillate(frequency, amplitude, center, time, rigidbody.GetInstanceID() / 1000, axes), axes);
 		}
 
-		public static void OscillateVelocity(this Rigidbody2D rigidbody, Vector2 frequency, Vector2 amplitude, Axes axes = Axes.XY)
+		public static void OscillateVelocity(this Rigidbody2D rigidbody, float frequency, float amplitude, float center, float time, Axes axes = Axes.XY)
 		{
-			OscillateVelocity(rigidbody, frequency, amplitude, Vector2.zero, axes);
-		}
-
-		public static void OscillateVelocity(this Rigidbody2D rigidbody, float frequency, float amplitude, Axes axes = Axes.XY)
-		{
-			OscillateVelocity(rigidbody, new Vector2(frequency, frequency), new Vector2(amplitude, amplitude), Vector2.zero, axes);
-		}
-
-		public static void OscillateVelocity(this Rigidbody2D rigidbody, float frequency, float amplitude, float center, Axes axes = Axes.XY)
-		{
-			OscillateVelocity(rigidbody, new Vector2(frequency, frequency), new Vector2(amplitude, amplitude), new Vector2(center, center), axes);
+			OscillateVelocity(rigidbody, new Vector2(frequency, frequency), new Vector2(amplitude, amplitude), new Vector2(center, center), time, axes);
 		}
 		#endregion
 
@@ -117,24 +107,14 @@ namespace Magicolo
 			rigidbody.TranslateTowards(new Vector2(targetPosition, targetPosition), speed, InterpolationModes.Quadratic, axes);
 		}
 
-		public static void OscillatePosition(this Rigidbody2D rigidbody, Vector2 frequency, Vector2 amplitude, Vector2 center, Axes axes = Axes.XY)
+		public static void OscillatePosition(this Rigidbody2D rigidbody, Vector2 frequency, Vector2 amplitude, Vector2 center, float time, Axes axes = Axes.XY)
 		{
-			rigidbody.SetPosition(rigidbody.transform.position.Oscillate((Vector3)frequency, (Vector3)amplitude, (Vector3)center, rigidbody.transform.GetInstanceID() / 1000, axes), axes);
+			rigidbody.SetPosition(rigidbody.transform.position.Oscillate((Vector3)frequency, (Vector3)amplitude, (Vector3)center, time, rigidbody.transform.GetInstanceID() / 1000, axes), axes);
 		}
 
-		public static void OscillatePosition(this Rigidbody2D rigidbody, Vector2 frequency, Vector2 amplitude, Axes axes = Axes.XY)
+		public static void OscillatePosition(this Rigidbody2D rigidbody, float frequency, float amplitude, float center, float time, Axes axes = Axes.XY)
 		{
-			rigidbody.OscillatePosition(frequency, amplitude, Vector2.zero, axes);
-		}
-
-		public static void OscillatePosition(this Rigidbody2D rigidbody, float frequency, float amplitude, float center, Axes axes = Axes.XY)
-		{
-			rigidbody.OscillatePosition(new Vector2(frequency, frequency), new Vector2(amplitude, amplitude), new Vector2(center, center), axes);
-		}
-
-		public static void OscillatePosition(this Rigidbody2D rigidbody, float frequency, float amplitude, Axes axes = Axes.XY)
-		{
-			rigidbody.OscillatePosition(new Vector2(frequency, frequency), new Vector2(amplitude, amplitude), Vector2.zero, axes);
+			rigidbody.OscillatePosition(new Vector2(frequency, frequency), new Vector2(amplitude, amplitude), new Vector2(center, center), time, axes);
 		}
 		#endregion
 
@@ -167,14 +147,9 @@ namespace Magicolo
 			rigidbody.RotateTowards(targetAngle, speed, InterpolationModes.Quadratic);
 		}
 
-		public static void OscillateEulerAngles(this Rigidbody2D rigidbody, float frequency, float amplitude, float center)
+		public static void OscillateEulerAngles(this Rigidbody2D rigidbody, float frequency, float amplitude, float center, float time)
 		{
-			rigidbody.SetEulerAngle(rigidbody.transform.eulerAngles.Oscillate(new Vector3(frequency, frequency, frequency), new Vector3(amplitude, amplitude, amplitude), new Vector3(center, center, center), rigidbody.GetInstanceID() / 1000, Axes.Z).z);
-		}
-
-		public static void OscillateEulerAngles(this Rigidbody2D rigidbody, float frequency, float amplitude)
-		{
-			rigidbody.OscillateEulerAngles(frequency, amplitude, 0);
+			rigidbody.SetEulerAngle(rigidbody.transform.eulerAngles.Oscillate(new Vector3(frequency, frequency, frequency), new Vector3(amplitude, amplitude, amplitude), new Vector3(center, center, center), time, rigidbody.GetInstanceID() / 1000, Axes.Z).z);
 		}
 		#endregion
 	}

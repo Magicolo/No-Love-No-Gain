@@ -13,6 +13,8 @@ public class CharacterStats
 	[Min]
 	public float Damage = 5f;
 	[Min]
+	public float Knockback;
+	[Min]
 	public float AttackSpeed = 1f;
 	[Min]
 	public float Range = 1f;
@@ -20,6 +22,8 @@ public class CharacterStats
 	public float MoveSpeed = 10f;
 	[Min]
 	public float MoveAcceleration = 10f;
+	[Min]
+	public float RotateSpeed = 8f;
 	[Min(BeforeSeparator = true)]
 	public float JumpMinHeight = 3f;
 	[Min]

@@ -34,16 +34,16 @@ namespace Magicolo
 
 		public static Vector3 Lerp(this Vector3 vector, Vector3 target, float time, Axes axes)
 		{
-			vector.x = axes.Contains(Axes.X) && Mathf.Abs(target.x - vector.x) > epsilon ? Mathf.Lerp(vector.x, target.x, time) : vector.x;
-			vector.y = axes.Contains(Axes.Y) && Mathf.Abs(target.y - vector.y) > epsilon ? Mathf.Lerp(vector.y, target.y, time) : vector.y;
-			vector.z = axes.Contains(Axes.Z) && Mathf.Abs(target.z - vector.z) > epsilon ? Mathf.Lerp(vector.z, target.z, time) : vector.z;
+			if ((axes & Axes.X) != 0 && Mathf.Abs(target.x - vector.x) > epsilon)
+				vector.x = Mathf.Lerp(vector.x, target.x, time);
+
+			if ((axes & Axes.Y) != 0 && Mathf.Abs(target.y - vector.y) > epsilon)
+				vector.y = Mathf.Lerp(vector.y, target.y, time);
+
+			if ((axes & Axes.Z) != 0 && Mathf.Abs(target.z - vector.z) > epsilon)
+				vector.z = Mathf.Lerp(vector.z, target.z, time);
 
 			return vector;
-		}
-
-		public static Vector3 Lerp(this Vector3 vector, Vector3 target, float time)
-		{
-			return vector.Lerp(target, time, Axes.XYZW);
 		}
 
 		public static Vector3 LerpLinear(this Vector3 vector, Vector3 target, float time, Axes axes)
@@ -110,28 +110,13 @@ namespace Magicolo
 			return vector.LerpAnglesLinear(targetAngles, time, Axes.XYZW);
 		}
 
-		public static Vector3 Oscillate(this Vector3 vector, Vector3 frequency, Vector3 amplitude, Vector3 center, float offset, Axes axes)
+		public static Vector3 Oscillate(this Vector3 vector, Vector3 frequency, Vector3 amplitude, Vector3 center, float time, float offset = 0f, Axes axes = Axes.XYZ)
 		{
-			vector.x = axes.Contains(Axes.X) ? center.x + amplitude.x * Mathf.Sin(frequency.x * Time.time + offset) : vector.x;
-			vector.y = axes.Contains(Axes.Y) ? center.y + amplitude.y * Mathf.Sin(frequency.y * Time.time + offset) : vector.y;
-			vector.z = axes.Contains(Axes.Z) ? center.z + amplitude.z * Mathf.Sin(frequency.z * Time.time + offset) : vector.z;
+			vector.x = axes.Contains(Axes.X) ? center.x + amplitude.x * Mathf.Sin(frequency.x * time + offset) : vector.x;
+			vector.y = axes.Contains(Axes.Y) ? center.y + amplitude.y * Mathf.Sin(frequency.y * time + offset) : vector.y;
+			vector.z = axes.Contains(Axes.Z) ? center.z + amplitude.z * Mathf.Sin(frequency.z * time + offset) : vector.z;
 
 			return vector;
-		}
-
-		public static Vector3 Oscillate(this Vector3 vector, Vector3 frequency, Vector3 amplitude, Vector3 center, float offset)
-		{
-			return vector.Oscillate(frequency, amplitude, center, offset, Axes.XYZW);
-		}
-
-		public static Vector3 Oscillate(this Vector3 vector, Vector3 frequency, Vector3 amplitude, Vector3 center, Axes axes)
-		{
-			return vector.Oscillate(frequency, amplitude, center, 0, axes);
-		}
-
-		public static Vector3 Oscillate(this Vector3 vector, Vector3 frequency, Vector3 amplitude, Vector3 center)
-		{
-			return vector.Oscillate(frequency, amplitude, center, 0, Axes.XYZW);
 		}
 
 		public static Vector3 Mult(this Vector3 vector, Vector3 otherVector, Axes axes)
@@ -309,6 +294,11 @@ namespace Magicolo
 		public static Vector3 RectClamp(this Vector3 vector, float width, float height)
 		{
 			return ((Vector2)vector).RectClamp(width, height);
+		}
+
+		public static Vector2 ToVector2(this Vector3 vector)
+		{
+			return new Vector2(vector.x, vector.y);
 		}
 	}
 }

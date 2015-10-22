@@ -21,7 +21,7 @@ public class Character3DRotateRotating : State
 		}
 
 		Layer.CurrentFacingDirection = Mathf.Lerp(Layer.modelTransform.localEulerAngles.y, Layer.TargetFacingAngle, Speed * Time.deltaTime);
-		Layer.modelTransform.RotateLocalTowards(Layer.CurrentFacingDirection, Speed, Axes.Y);
+		Layer.modelTransform.RotateLocalTowards(Layer.CurrentFacingDirection, Speed * Time.deltaTime, axes: Axes.Y);
 	}
 
 	public override void OnFixedUpdate()
