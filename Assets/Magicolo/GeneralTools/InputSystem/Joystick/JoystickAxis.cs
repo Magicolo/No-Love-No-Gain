@@ -2,82 +2,64 @@
 using System.Collections;
 using System.Collections.Generic;
 using Magicolo;
+using Magicolo.GeneralTools;
 
-namespace Magicolo {
+namespace Magicolo
+{
 	[System.Serializable]
-	public class JoystickAxis {
+	public class JoystickAxis : AxisBase
+	{
+		[SerializeField]
+		Joysticks _joystick;
+		public Joysticks Joystick
+		{
+			get { return _joystick; }
+			set
+			{
+				_joystick = value;
 
-		[SerializeField] string name = "";
-		public string Name {
-			get {
-				return name;
-			}
-		}
-    	
-		[SerializeField] Joysticks joystick;
-		public Joysticks Joystick {
-			get {
-				return joystick;
-			}
-			set {
-				joystick = value;
-				
-				axisName = InputSystem.JoystickInputToAxis(joystick, axis);
-				lastValue = 0;
+				_axis = InputSystem.JoystickInputToAxis(_joystick, _axisInput);
+				_lastValue = 0;
 			}
 		}
 
-		[SerializeField, PropertyField] JoystickAxes axis;
-		public JoystickAxes Axis {
-			get {
-				return axis;
-			}
-			set {
-				axis = value;
-				
-				axisName = InputSystem.JoystickInputToAxis(joystick, axis);
-				lastValue = 0;
+		[SerializeField, PropertyField]
+		JoystickAxes _axisInput;
+		public JoystickAxes AxisInput
+		{
+			get { return _axisInput; }
+			set
+			{
+				_axisInput = value;
+
+				_axis = InputSystem.JoystickInputToAxis(_joystick, _axisInput);
+				_lastValue = 0;
 			}
 		}
 
-		[SerializeField] string axisName;
-		public string AxisName {
-			get {
-				return axisName;
-			}
-			set {
-				axisName = value;
-				
-				joystick = InputSystem.AxisToJoystick(axisName);
-				axis = InputSystem.AxisToJoystickAxis(axisName);
-				lastValue = 0;
-			}
-		}
-		
-		float lastValue;
-		public float LastValue {
-			get {
-				return lastValue;
-			}
-			set {
-				lastValue = value;
+		public override string Axis
+		{
+			get { return _axis; }
+			set
+			{
+				_axis = value;
+
+				_joystick = InputSystem.AxisToJoystick(_axis);
+				_axisInput = InputSystem.AxisToJoystickAxis(_axis);
+				_lastValue = 0;
 			}
 		}
-		
-		public JoystickAxis(string name, Joysticks joystick, JoystickAxes axis) {
-			this.name = name;
-			this.joystick = joystick;
-			this.axis = axis;
-		
-			axisName = InputSystem.JoystickInputToAxis(joystick, axis);
+
+		public JoystickAxis(string name, Joysticks joystick, JoystickAxes axis) : base(name, InputSystem.JoystickInputToAxis(joystick, axis))
+		{
+			_joystick = joystick;
+			_axisInput = axis;
 		}
-		
-		public JoystickAxis(string name, string axisName) {
-			this.name = name;
-			this.axisName = axisName;
-		
-			joystick = InputSystem.AxisToJoystick(axisName);
-			axis = InputSystem.AxisToJoystickAxis(axisName);
+
+		public JoystickAxis(string name, string axisName) : base(name, axisName)
+		{
+			_joystick = InputSystem.AxisToJoystick(axisName);
+			_axisInput = InputSystem.AxisToJoystickAxis(axisName);
 		}
 	}
 }

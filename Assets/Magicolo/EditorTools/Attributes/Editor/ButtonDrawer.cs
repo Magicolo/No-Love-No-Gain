@@ -2,6 +2,7 @@
 using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Magicolo.EditorTools
 {
@@ -24,26 +25,23 @@ namespace Magicolo.EditorTools
 
 				bool pressed;
 				if (buttonStyle != null)
-				{
 					pressed = GUI.Button(_currentPosition, buttonLabel, buttonStyle);
-				}
 				else
-				{
 					pressed = GUI.Button(_currentPosition, buttonLabel);
-				}
 
 				AttributeUtility.EndIndentation();
 
 				if (pressed)
 				{
 					if (!string.IsNullOrEmpty(buttonIndexVariableName))
-					{
 						property.serializedObject.FindProperty(buttonIndexVariableName).intValue = _index;
-					}
 
 					if (!string.IsNullOrEmpty(buttonPressedMethodName))
 					{
-						(property.serializedObject.targetObject as MonoBehaviour).Invoke(buttonPressedMethodName, 0);
+						MethodInfo method = property.serializedObject.targetObject.GetType().GetMethod(buttonPressedMethodName, ObjectExtensions.AllFlags);
+
+						if (method != null)
+							method.Invoke(property.serializedObject.targetObject, null);
 					}
 
 					EditorUtility.SetDirty(property.serializedObject.targetObject);

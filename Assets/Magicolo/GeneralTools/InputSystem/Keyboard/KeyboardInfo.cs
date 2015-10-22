@@ -4,229 +4,231 @@ using System.Collections.Generic;
 using Magicolo;
 using Magicolo.GeneralTools;
 
-namespace Magicolo {
-	[System.Serializable]  
-	public class KeyboardInfo : ControllerInfo {
+namespace Magicolo
+{
+	[System.Serializable]
+	public class KeyboardInfo : ControllerInfo
+	{
+		[SerializeField]
+		List<KeyboardButton> _buttons = new List<KeyboardButton>();
+		[SerializeField]
+		List<KeyboardAxis> _axes = new List<KeyboardAxis>();
 
-		[SerializeField] List<KeyboardButton> buttons = new List<KeyboardButton>();
-		[SerializeField] List<KeyboardAxis> axes = new List<KeyboardAxis>();
-		
-		Dictionary<string, List<KeyboardButton>> nameButtonDict;
-		Dictionary<string, List<KeyboardButton>> NameButtonDict {
-			get {
-				if (nameButtonDict == null) {
+		Dictionary<string, List<KeyboardButton>> _nameButtonDict;
+		Dictionary<string, List<KeyboardButton>> NameButtonDict
+		{
+			get
+			{
+				if (_nameButtonDict == null)
+				{
 					BuildNameButtonDict();
 				}
-				
-				return nameButtonDict;
+
+				return _nameButtonDict;
 			}
 		}
-		
-		Dictionary<string, List<KeyboardAxis>> nameAxisDict;
-		Dictionary<string, List<KeyboardAxis>> NameAxisDict {
-			get {
-				if (nameAxisDict == null) {
+
+		Dictionary<string, List<KeyboardAxis>> _nameAxisDict;
+		Dictionary<string, List<KeyboardAxis>> NameAxisDict
+		{
+			get
+			{
+				if (_nameAxisDict == null)
+				{
 					BuildNameAxisDict();
 				}
-				
-				return nameAxisDict;
+
+				return _nameAxisDict;
 			}
 		}
-		
-		public KeyboardInfo(string name, KeyboardButton[] buttons, KeyboardAxis[] axes, IInputListener[] listeners)
-			: base(name, listeners) {
-			
-			this.buttons = new List<KeyboardButton>(buttons);
-			this.axes = new List<KeyboardAxis>(axes);
-		
+
+		public KeyboardInfo(string name, KeyboardButton[] buttons, KeyboardAxis[] axes, IInputListener[] listeners) : base(name, listeners)
+		{
+			_buttons = new List<KeyboardButton>(buttons);
+			_axes = new List<KeyboardAxis>(axes);
+
 			BuildNameButtonDict();
 			BuildNameAxisDict();
 		}
-		
-		public void UpdateInput() {
-			if (!HasListeners()) {
+
+		public void UpdateInput()
+		{
+			if (!HasListeners())
 				return;
+
+			for (int i = 0; i < _buttons.Count; i++)
+			{
+				KeyboardButton button = _buttons[i];
+
+				if (Input.GetKeyDown(button.Key))
+					SendButtonInput(button.Name, ButtonStates.Down);
+				else if (Input.GetKeyUp(button.Key))
+					SendButtonInput(button.Name, ButtonStates.Up);
+				else if (Input.GetKey(button.Key))
+					SendButtonInput(button.Name, ButtonStates.Pressed);
 			}
-			
-			foreach (string buttonName in NameButtonDict.Keys) {
-				foreach (KeyboardButton button in NameButtonDict[buttonName]) {
-					if (Input.GetKeyDown(button.Key)) {
-						SendInput(button.Name, ButtonStates.Down);
-						break;
-					}
-					
-					if (Input.GetKeyUp(button.Key)) {
-						SendInput(button.Name, ButtonStates.Up);
-						break;
-					}
-					
-					if (Input.GetKey(button.Key)) {
-						SendInput(button.Name, ButtonStates.Pressed);
-						break;
-					}
-				}
-			}
-			
-			foreach (KeyboardAxis axis in axes) {
+
+			for (int i = 0; i < _axes.Count; i++)
+			{
+				KeyboardAxis axis = _axes[i];
 				float currentValue = Input.GetAxis(axis.Axis);
-					
-				if ((axis.LastValue != 0 && currentValue == 0) || currentValue - axis.LastValue != 0) {
+
+				if ((axis.LastValue != 0 && currentValue == 0) || currentValue - axis.LastValue != 0)
+				{
 					axis.LastValue = currentValue;
-					
-					SendInput(axis.Name, currentValue);
+
+					SendAxisInput(axis.Name, currentValue);
 				}
 			}
 		}
-		
-		public KeyboardButton[] GetButtons() {
-			return buttons.ToArray();
+
+		public KeyboardButton[] GetButtons()
+		{
+			return _buttons.ToArray();
 		}
-		
-		public KeyboardButton[] GetButtons(string buttonName) {
+
+		public KeyboardButton[] GetButtons(string buttonName)
+		{
 			return NameButtonDict[buttonName].ToArray();
 		}
-		
-		public string[] GetButtonNames() {
+
+		public string[] GetButtonNames()
+		{
 			return NameButtonDict.GetKeyArray();
 		}
-		
-		public void SetButtons(KeyboardButton[] buttons) {
-			this.buttons = new List<KeyboardButton>(buttons);
-			
+
+		public void SetButtons(KeyboardButton[] buttons)
+		{
+			_buttons = new List<KeyboardButton>(buttons);
 			BuildNameButtonDict();
 		}
-		
-		public void CopyButtons(KeyboardInfo info) {
+
+		public void CopyButtons(KeyboardInfo info)
+		{
 			SetButtons(info.GetButtons());
 		}
-		
-		public void SwitchButtons(KeyboardInfo info) {
+
+		public void SwitchButtons(KeyboardInfo info)
+		{
 			KeyboardButton[] otherButtons = info.GetButtons();
-			
 			info.SetButtons(GetButtons());
 			SetButtons(otherButtons);
 		}
-		
-		public void AddButton(KeyboardButton button) {
-			buttons.Add(button);
-			
-			if (!NameButtonDict.ContainsKey(button.Name)) {
+
+		public void AddButton(KeyboardButton button)
+		{
+			_buttons.Add(button);
+
+			if (!NameButtonDict.ContainsKey(button.Name))
 				NameButtonDict[button.Name] = new List<KeyboardButton>();
-			}
 
 			NameButtonDict[button.Name].Add(button);
 		}
-		
-		public void AddButtons(KeyboardButton[] buttons) {
-			foreach (KeyboardButton button in buttons) {
-				AddButton(button);
-			}
-		}
-		
-		public void RemoveButton(KeyboardButton button) {
-			buttons.Remove(button);
-			
-			if (NameButtonDict.ContainsKey(button.Name)) {
+
+		public void RemoveButton(KeyboardButton button)
+		{
+			_buttons.Remove(button);
+
+			if (NameButtonDict.ContainsKey(button.Name))
 				NameButtonDict[button.Name].Remove(button);
-			}
 		}
-	
-		public void RemoveButtons(KeyboardButton[] buttons) {
-			foreach (KeyboardButton button in buttons) {
-				RemoveButton(button);
-			}
+
+		public KeyboardAxis[] GetAxes()
+		{
+			return _axes.ToArray();
 		}
-		
-		public KeyboardAxis[] GetAxes() {
-			return axes.ToArray();
-		}
-		
-		public KeyboardAxis[] GetAxes(string axisName) {
+
+		public KeyboardAxis[] GetAxes(string axisName)
+		{
 			return NameAxisDict[axisName].ToArray();
 		}
-		
-		public string[] GetAxisNames() {
+
+		public string[] GetAxisNames()
+		{
 			return NameAxisDict.GetKeyArray();
 		}
-		
-		public void SetAxes(KeyboardAxis[] axes) {
-			this.axes = new List<KeyboardAxis>(axes);
-			
+
+		public void SetAxes(KeyboardAxis[] axes)
+		{
+			this._axes = new List<KeyboardAxis>(axes);
+
 			BuildNameAxisDict();
 		}
-		
-		public void CopyAxes(KeyboardInfo info) {
+
+		public void CopyAxes(KeyboardInfo info)
+		{
 			SetAxes(info.GetAxes());
 		}
 
-		public void SwitchAxes(KeyboardInfo info) {
+		public void SwitchAxes(KeyboardInfo info)
+		{
 			KeyboardAxis[] otherAxes = info.GetAxes();
-			
+
 			info.SetAxes(GetAxes());
 			SetAxes(otherAxes);
 		}
-		
-		public void AddAxis(KeyboardAxis axis) {
-			axes.Add(axis);
-			
-			if (!NameAxisDict.ContainsKey(axis.Name)) {
+
+		public void AddAxis(KeyboardAxis axis)
+		{
+			_axes.Add(axis);
+
+			if (!NameAxisDict.ContainsKey(axis.Name))
+			{
 				NameAxisDict[axis.Name] = new List<KeyboardAxis>();
 			}
 
 			NameAxisDict[axis.Name].Add(axis);
 		}
-		
-		public void AddAxes(KeyboardAxis[] axes) {
-			foreach (KeyboardAxis axis in axes) {
-				AddAxis(axis);
-			}
-		}
-		
-		public void RemoveAxis(KeyboardAxis axis) {
-			axes.Remove(axis);
-			
-			if (NameAxisDict.ContainsKey(axis.Name)) {
+
+		public void RemoveAxis(KeyboardAxis axis)
+		{
+			_axes.Remove(axis);
+
+			if (NameAxisDict.ContainsKey(axis.Name))
+			{
 				NameAxisDict[axis.Name].Remove(axis);
 			}
 		}
 
-		public void RemoveAxes(KeyboardAxis[] axes) {
-			foreach (KeyboardAxis axis in axes) {
-				RemoveAxis(axis);
-			}
-		}
-		
-		public void CopyInput(KeyboardInfo info) {
+		public void CopyInput(KeyboardInfo info)
+		{
 			CopyButtons(info);
 			CopyAxes(info);
 		}
-		
-		public void SwitchInput(KeyboardInfo info) {
+
+		public void SwitchInput(KeyboardInfo info)
+		{
 			SwitchButtons(info);
 			SwitchAxes(info);
 		}
-		
-		void BuildNameButtonDict() {
-			nameButtonDict = new Dictionary<string, List<KeyboardButton>>();
-			
-			foreach (KeyboardButton key in buttons) {
-				if (!nameButtonDict.ContainsKey(key.Name)) {
-					nameButtonDict[key.Name] = new List<KeyboardButton>();
+
+		void BuildNameButtonDict()
+		{
+			_nameButtonDict = new Dictionary<string, List<KeyboardButton>>();
+
+			foreach (KeyboardButton key in _buttons)
+			{
+				if (!_nameButtonDict.ContainsKey(key.Name))
+				{
+					_nameButtonDict[key.Name] = new List<KeyboardButton>();
 				}
-				
-				nameButtonDict[key.Name].Add(key);
+
+				_nameButtonDict[key.Name].Add(key);
 			}
 		}
 
-		void BuildNameAxisDict() {
-			nameAxisDict = new Dictionary<string, List<KeyboardAxis>>();
-			
-			foreach (KeyboardAxis axis in axes) {
-				if (!nameAxisDict.ContainsKey(axis.Name)) {
-					nameAxisDict[axis.Name] = new List<KeyboardAxis>();
+		void BuildNameAxisDict()
+		{
+			_nameAxisDict = new Dictionary<string, List<KeyboardAxis>>();
+
+			foreach (KeyboardAxis axis in _axes)
+			{
+				if (!_nameAxisDict.ContainsKey(axis.Name))
+				{
+					_nameAxisDict[axis.Name] = new List<KeyboardAxis>();
 				}
-				
-				nameAxisDict[axis.Name].Add(axis);
+
+				_nameAxisDict[axis.Name].Add(axis);
 			}
 		}
 	}
