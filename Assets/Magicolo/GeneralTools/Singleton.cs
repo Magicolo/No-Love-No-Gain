@@ -5,7 +5,6 @@ using System.Linq;
 using UnityEngine;
 using Magicolo;
 
-// Utiliser le design BaseManager, AKA get rid of this class
 public abstract class Singleton<T> : MonoBehaviourExtended where T : Singleton<T>
 {
 	protected static T _instance;

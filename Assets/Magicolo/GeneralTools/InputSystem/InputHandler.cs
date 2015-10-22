@@ -12,6 +12,7 @@ public class InputHandler : MonoBehaviourExtended
 
 	[SerializeField, Empty(BeforeSeparator = true)]
 	Joysticks _joystick;
+	public Joysticks Joystick { get { return _joystick; } }
 	public List<JoystickButton> JoystickButtons;
 	public List<JoystickAxis> JoystickAxes;
 

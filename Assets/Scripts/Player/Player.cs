@@ -24,10 +24,16 @@ public class Player : DamageableBase
 	Vector2 _jumpDirection;
 	float _attackSpeedCounter;
 	int _currentFist;
+	int _isMovingHash = Animator.StringToHash("IsMoving");
+	int _isGroundedHash = Animator.StringToHash("IsGrounded");
+	int _isJumpingHash = Animator.StringToHash("IsJumping");
+	int _isFallingHash = Animator.StringToHash("IsFalling");
+	int _isAttackingHash = Animator.StringToHash("IsAttacking");
 
 	public bool IsMoving { get; set; }
 	public bool IsGrounded { get; set; }
 	public bool IsJumping { get; set; }
+	public bool IsFalling { get; set; }
 	public bool IsAttacking { get; set; }
 
 	void Start()
@@ -38,11 +44,12 @@ public class Player : DamageableBase
 	void Update()
 	{
 		UpdatePunch();
-		UpdateGrounded();
+		//UpdateAnimator();
 	}
 
 	void FixedUpdate()
 	{
+		UpdateGrounded();
 		UpdateMotion();
 		UpdateJump();
 	}
@@ -93,6 +100,7 @@ public class Player : DamageableBase
 	void UpdateJump()
 	{
 		IsJumping = InputHandler.GetButtonPressed("Jump");
+		IsFalling = IsJumping && !IsGrounded && Rigidbody.velocity.y < 0f;
 
 		if (IsGrounded && InputHandler.GetButtonDown("Jump"))
 			Jump();
@@ -109,6 +117,15 @@ public class Player : DamageableBase
 			Rigidbody.Accelerate(_jumpDirection * _jumpIncrement * (_jumpCounter / Stats.JumpMaxDuration), Axes.XY);
 	}
 
+	void UpdateAnimator()
+	{
+		Animator.SetBool(_isMovingHash, IsMoving);
+		Animator.SetBool(_isGroundedHash, IsGrounded);
+		Animator.SetBool(_isJumpingHash, IsJumping);
+		Animator.SetBool(_isFallingHash, IsFalling);
+		Animator.SetBool(_isAttackingHash, IsAttacking);
+	}
+
 	Vector2 GetKnockback(Transform target)
 	{
 		return (target.position - transform.position).normalized * Stats.Knockback;
@@ -116,7 +133,7 @@ public class Player : DamageableBase
 
 	public void Punch(Collider2D collision)
 	{
-		IDamageable damageable = collision.GetComponent<IDamageable>();
+		IDamageable damageable = collision.FindComponent<IDamageable>();
 
 		if (damageable != null && damageable.CanBeDamagedBy(DamageSources.Player))
 			damageable.Damage(Stats.Damage, DamageSources.Player, GetKnockback(collision.transform));
@@ -142,6 +159,13 @@ public class Player : DamageableBase
 		_jumpIncrement = (Stats.JumpMaxHeight - Stats.JumpMinHeight) / Stats.JumpMaxDuration;
 		_jumpDirection = -Gravity.Direction;
 		_jumpCounter = Stats.JumpMaxDuration;
+	}
+
+	public override void Damage(float damage, DamageSources damageSource, Vector2 knockback = default(Vector2))
+	{
+		base.Damage(damage, damageSource, knockback);
+
+		Rigidbody.AddForce(knockback);
 	}
 
 	public override bool CanBeDamagedBy(DamageSources damageSource)
