@@ -24,10 +24,16 @@ public class Player : DamageableBase
 	Vector2 _jumpDirection;
 	float _attackSpeedCounter;
 	int _currentFist;
+	int _isMovingHash = Animator.StringToHash("IsMoving");
+	int _isGroundedHash = Animator.StringToHash("IsGrounded");
+	int _isJumpingHash = Animator.StringToHash("IsJumping");
+	int _isFallingHash = Animator.StringToHash("IsFalling");
+	int _isAttackingHash = Animator.StringToHash("IsAttacking");
 
 	public bool IsMoving { get; set; }
 	public bool IsGrounded { get; set; }
 	public bool IsJumping { get; set; }
+	public bool IsFalling { get; set; }
 	public bool IsAttacking { get; set; }
 
 	void Start()
@@ -38,11 +44,12 @@ public class Player : DamageableBase
 	void Update()
 	{
 		UpdatePunch();
-		UpdateGrounded();
+		UpdateAnimator();
 	}
 
 	void FixedUpdate()
 	{
+		UpdateGrounded();
 		UpdateMotion();
 		UpdateJump();
 	}
@@ -93,6 +100,7 @@ public class Player : DamageableBase
 	void UpdateJump()
 	{
 		IsJumping = InputHandler.GetButtonPressed("Jump");
+		IsFalling = IsJumping && !IsGrounded && Rigidbody.velocity.y < 0f;
 
 		if (IsGrounded && InputHandler.GetButtonDown("Jump"))
 			Jump();
@@ -107,6 +115,15 @@ public class Player : DamageableBase
 
 		if (_jumpCounter > 0)
 			Rigidbody.Accelerate(_jumpDirection * _jumpIncrement * (_jumpCounter / Stats.JumpMaxDuration), Axes.XY);
+	}
+
+	void UpdateAnimator()
+	{
+		Animator.SetBool(_isMovingHash, IsMoving);
+		Animator.SetBool(_isGroundedHash, IsGrounded);
+		Animator.SetBool(_isJumpingHash, IsJumping);
+		Animator.SetBool(_isFallingHash, IsFalling);
+		Animator.SetBool(_isAttackingHash, IsAttacking);
 	}
 
 	Vector2 GetKnockback(Transform target)
