@@ -5,7 +5,7 @@ using System;
 
 public abstract class DamageableBase : MonoBehaviour, IDamageable
 {
-	public float Hp;
+	public float Health { get; set; }
 
 	protected virtual void OnDamaged() { }
 
@@ -17,9 +17,9 @@ public abstract class DamageableBase : MonoBehaviour, IDamageable
 	{
 		if (CanBeDamagedBy(damageSource))
 		{
-			Hp -= damage;
+			Health -= damage;
 
-			if (Hp < 0)
+			if (Health < 0)
 				Die();
 			else
 				OnDamaged();

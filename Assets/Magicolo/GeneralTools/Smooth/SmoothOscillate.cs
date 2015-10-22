@@ -50,13 +50,13 @@ namespace Magicolo
 			if (!Culling || Renderer.isVisible)
 			{
 				if (Mode.Contains(TransformModes.Position))
-					transform.OscillateLocalPosition(Frequency, Amplitude, Center, Axes);
+					transform.OscillateLocalPosition(Frequency, Amplitude, Center, Time.time, Axes);
 
 				if (Mode.Contains(TransformModes.Rotation))
-					transform.OscillateLocalEulerAngles(Frequency, Amplitude, Center, Axes);
+					transform.OscillateLocalEulerAngles(Frequency, Amplitude, Center, Time.time, Axes);
 
 				if (Mode.Contains(TransformModes.Scale))
-					transform.OscillateLocalScale(Frequency, Amplitude, Center, Axes);
+					transform.OscillateLocalScale(Frequency, Amplitude, Center, Time.time, Axes);
 			}
 		}
 
