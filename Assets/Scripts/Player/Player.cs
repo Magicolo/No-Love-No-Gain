@@ -44,7 +44,7 @@ public class Player : DamageableBase
 	void Update()
 	{
 		UpdatePunch();
-		UpdateAnimator();
+		//UpdateAnimator();
 	}
 
 	void FixedUpdate()
