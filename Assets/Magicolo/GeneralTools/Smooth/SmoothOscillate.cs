@@ -2,61 +2,69 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Magicolo {
+namespace Magicolo
+{
 	[AddComponentMenu("Magicolo/General/Smooth/Oscillate")]
-	public class SmoothOscillate : MonoBehaviourExtended {
+	public class SmoothOscillate : MonoBehaviourExtended
+	{
+		[Mask]
+		public TransformModes Mode = TransformModes.Position;
+		[Mask(Axes.XYZ)]
+		public Axes Axes = Axes.XYZ;
+		public bool Culling = true;
 
-		[Mask] public TransformModes mode = TransformModes.Position;
-		[Mask(Axes.XYZ)] public Axes axes = Axes.XYZ;
-		public bool culling = true;
-		
-		[Slider(BeforeSeparator = true)] public float frequencyRandomness;
-		public Vector3 frequency = Vector3.one;
-		
-		[Slider(BeforeSeparator = true)] public float amplitudeRandomness;
-		public Vector3 amplitude = Vector3.one;
-		
-		[Slider(BeforeSeparator = true)] public float centerRandomness;
-		public Vector3 center;
-	
+		[Slider(BeforeSeparator = true)]
+		public float FrequencyRandomness;
+		public Vector3 Frequency = Vector3.one;
+
+		[Slider(BeforeSeparator = true)]
+		public float AmplitudeRandomness;
+		public Vector3 Amplitude = Vector3.one;
+
+		[Slider(BeforeSeparator = true)]
+		public float CenterRandomness;
+		public Vector3 Center;
+
 		bool _rendererCached;
 		Renderer _renderer;
-		new public Renderer renderer { 
-			get { 
+		public Renderer Renderer
+		{
+			get
+			{
 				_renderer = _rendererCached ? _renderer : GetComponent<Renderer>();
 				_rendererCached = true;
 				return _renderer;
 			}
 		}
-		
-		void Awake() {
+
+		void Awake()
+		{
 			ApplyRandomness();
 		}
-		
-		void Update() {
-			if (mode == TransformModes.None || axes == Axes.None) {
+
+		void Update()
+		{
+			if (Mode == TransformModes.None || Axes == Axes.None)
 				return;
-			}
-			
-			if (!culling || renderer.isVisible) {
-				if (mode.Contains(TransformModes.Position)) {
-					transform.OscillateLocalPosition(frequency, amplitude, center, axes);
-				}
-				
-				if (mode.Contains(TransformModes.Rotation)) {
-					transform.OscillateLocalEulerAngles(frequency, amplitude, center, axes);
-				}
-				
-				if (mode.Contains(TransformModes.Scale)) {
-					transform.OscillateLocalScale(frequency, amplitude, center, axes);
-				}
+
+			if (!Culling || Renderer.isVisible)
+			{
+				if (Mode.Contains(TransformModes.Position))
+					transform.OscillateLocalPosition(Frequency, Amplitude, Center, Axes);
+
+				if (Mode.Contains(TransformModes.Rotation))
+					transform.OscillateLocalEulerAngles(Frequency, Amplitude, Center, Axes);
+
+				if (Mode.Contains(TransformModes.Scale))
+					transform.OscillateLocalScale(Frequency, Amplitude, Center, Axes);
 			}
 		}
-		
-		public void ApplyRandomness() {
-			frequency += frequency.SetValues(new Vector3(Random.Range(-frequencyRandomness * frequency.x, frequencyRandomness * frequency.x), Random.Range(-frequencyRandomness * frequency.y, frequencyRandomness * frequency.y), Random.Range(-frequencyRandomness * frequency.z, frequencyRandomness * frequency.z)), axes);
-			amplitude += amplitude.SetValues(new Vector3(Random.Range(-amplitudeRandomness * amplitude.x, amplitudeRandomness * amplitude.x), Random.Range(-amplitudeRandomness * amplitude.y, amplitudeRandomness * amplitude.y), Random.Range(-amplitudeRandomness * amplitude.z, amplitudeRandomness * amplitude.z)), axes);
-			center += center.SetValues(new Vector3(Random.Range(-centerRandomness * center.x, centerRandomness * center.x), Random.Range(-centerRandomness * center.y, centerRandomness * center.y), Random.Range(-centerRandomness * center.z, centerRandomness * center.z)), axes);
+
+		public void ApplyRandomness()
+		{
+			Frequency += Frequency.SetValues(new Vector3(Random.Range(-FrequencyRandomness * Frequency.x, FrequencyRandomness * Frequency.x), Random.Range(-FrequencyRandomness * Frequency.y, FrequencyRandomness * Frequency.y), Random.Range(-FrequencyRandomness * Frequency.z, FrequencyRandomness * Frequency.z)), Axes);
+			Amplitude += Amplitude.SetValues(new Vector3(Random.Range(-AmplitudeRandomness * Amplitude.x, AmplitudeRandomness * Amplitude.x), Random.Range(-AmplitudeRandomness * Amplitude.y, AmplitudeRandomness * Amplitude.y), Random.Range(-AmplitudeRandomness * Amplitude.z, AmplitudeRandomness * Amplitude.z)), Axes);
+			Center += Center.SetValues(new Vector3(Random.Range(-CenterRandomness * Center.x, CenterRandomness * Center.x), Random.Range(-CenterRandomness * Center.y, CenterRandomness * Center.y), Random.Range(-CenterRandomness * Center.z, CenterRandomness * Center.z)), Axes);
 		}
 	}
 }

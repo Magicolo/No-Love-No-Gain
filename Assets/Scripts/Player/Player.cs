@@ -14,7 +14,7 @@ public class Player : DamageableBase
 	public Gravity2D Gravity;
 	public Animator Animator;
 	public SpriteRenderer Renderer;
-	public InputHandler Input;
+	public InputHandler InputHandler;
 
 	float _motionX;
 	float _currentSpeed;
@@ -42,6 +42,11 @@ public class Player : DamageableBase
 		UpdateJump();
 	}
 
+	void OnTriggerEnter2D(Collider2D collision)
+	{
+
+	}
+
 	void UpdateGrounded()
 	{
 		GroundedSettings.Angle = Gravity.Angle - 90;
@@ -50,7 +55,7 @@ public class Player : DamageableBase
 
 	void UpdateMotion()
 	{
-		_currentSpeed = Input.GetAxis("MotionX") * Stats.MoveSpeed;
+		_currentSpeed = InputHandler.GetAxis("MotionX") * Stats.MoveSpeed;
 
 		if (Gravity.Angle == 90f)
 			Rigidbody.AccelerateTowards(_currentSpeed, Stats.MoveAcceleration, Kronos.Player.FixedDeltaTime, axes: Axes.X);
@@ -71,9 +76,9 @@ public class Player : DamageableBase
 
 	void UpdateJump()
 	{
-		IsJumping = Input.GetButtonPressed("Jump");
+		IsJumping = InputHandler.GetButtonPressed("Jump");
 
-		if (IsGrounded && Input.GetButtonDown("Jump"))
+		if (IsGrounded && InputHandler.GetButtonDown("Jump"))
 			Jump();
 
 		if (!IsJumping)

@@ -418,12 +418,12 @@ namespace Magicolo
 		{
 			List<KeyCode> pressed = new List<KeyCode>();
 
-			foreach (KeyCode key in keys)
+			for (int i = 0; i < keys.Length; i++)
 			{
+				KeyCode key = keys[i];
+
 				if (Input.GetKey(key))
-				{
 					pressed.Add(key);
-				}
 			}
 
 			return pressed.ToArray();
@@ -523,9 +523,7 @@ namespace Magicolo
 				_allKeys[allCounter++] = key;
 
 				if (!keyName.StartsWith("Joystick") && !keyName.StartsWith("Mouse"))
-				{
 					_keyboardKeys[keyboardCounter++] = key;
-				}
 
 				if (keyName.StartsWith("Joystick"))
 				{
@@ -533,52 +531,34 @@ namespace Magicolo
 					int joystickButton = (int)KeyToJoystickButton(key);
 
 					if (!_joystickKeysDict.ContainsKey(joystick))
-					{
 						_joystickKeysDict[joystick] = new KeyCode[20];
-					}
 
 					_joystickKeysDict[joystick][joystickButton] = key;
 					_joystickKeys[joystickCounter++] = key;
 				}
 				else
-				{
 					_nonjoystickKeys[nonJoystickCounter++] = key;
-				}
 
 				if (keyName.StartsWith("Mouse"))
-				{
 					_mouseKeys[mouseCounter++] = key;
-				}
 
 				if (keyName.Length == 1 && char.IsLetter(keyName[0]))
-				{
 					_letterKeys[letterCounter++] = key;
-				}
 
 				if ((keyName.Length == 2 || keyName.Length == 3) && keyName.StartsWith("F"))
-				{
 					_functionKeys[functionCounter++] = key;
-				}
 
 				if (keyName.StartsWith("Alpha"))
-				{
 					_numberKeys[alphaCounter++] = key;
-				}
 
 				if (keyName.StartsWith("Keypad"))
-				{
 					_keypadKeys[keypadCounter++] = key;
-				}
 
 				if (keyName.EndsWith("Arrow"))
-				{
 					_arrowKeys[arrowCounter++] = key;
-				}
 
 				if (keyName.EndsWith("Shift") || keyName.EndsWith("Alt") || keyName.EndsWith("Control") || keyName.StartsWith("Alt"))
-				{
 					_modifierKeys[modifierCounter++] = key;
-				}
 			}
 		}
 	}

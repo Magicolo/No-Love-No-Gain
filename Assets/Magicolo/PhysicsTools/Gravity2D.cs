@@ -12,7 +12,7 @@ namespace Magicolo
 	{
 		bool _rigidbody2DCached;
 		Rigidbody2D _rigidbody2D;
-		new public Rigidbody2D rigidbody2D
+		public Rigidbody2D Rigidbody2D
 		{
 			get
 			{
@@ -24,7 +24,7 @@ namespace Magicolo
 
 		void FixedUpdate()
 		{
-			rigidbody2D.AddForce(Force * rigidbody2D.mass);
+			Rigidbody2D.AddForce(Force * Rigidbody2D.mass);
 		}
 	}
 }
