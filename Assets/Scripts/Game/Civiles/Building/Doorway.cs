@@ -1,0 +1,1 @@
+﻿using UnityEngine;using System.Collections;using Magicolo;using Rick;public class Doorway : MonoBehaviour {		void Start () 	{		}			void Update () 	{		}}
