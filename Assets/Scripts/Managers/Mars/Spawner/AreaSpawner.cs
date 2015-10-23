@@ -16,11 +16,12 @@ public class AreaSpawner : BaseSpawner
 	public float SpawnMax;
 	public GameObject prefabToSpawn;
 
-	public BoxCollider2D spawningZone;
+	BoxCollider2D spawningZone;
 
 	void Start()
 	{
 		Timer = Random.Range(CoolDownMin, CoolDownMax);
+		spawningZone = GetComponent<BoxCollider2D>();
 	}
 
 	public override void Update()
