@@ -19,14 +19,14 @@ namespace Magicolo
 			rigidbody.SetVelocity(new Vector2(velocity, velocity), axes);
 		}
 
-		public static void Accelerate(this Rigidbody2D rigidbody, Vector2 acceleration, Axes axes = Axes.XY)
+		public static void Accelerate(this Rigidbody2D rigidbody, Vector2 acceleration, float deltaTime, Axes axes = Axes.XY)
 		{
-			rigidbody.SetVelocity((rigidbody.velocity + acceleration * Time.fixedDeltaTime), axes);
+			rigidbody.SetVelocity((rigidbody.velocity + acceleration * deltaTime), axes);
 		}
 
-		public static void Accelerate(this Rigidbody2D rigidbody, float acceleration, Axes axes = Axes.XY)
+		public static void Accelerate(this Rigidbody2D rigidbody, float acceleration, float deltaTime, Axes axes = Axes.XY)
 		{
-			rigidbody.Accelerate(new Vector2(acceleration, acceleration), axes);
+			rigidbody.Accelerate(new Vector2(acceleration, acceleration), deltaTime, axes);
 		}
 
 		public static void AccelerateTowards(this Rigidbody2D rigidbody, Vector2 targetSpeed, float acceleration, float deltaTime, InterpolationModes interpolation = InterpolationModes.Quadratic, Axes axes = Axes.XY)
