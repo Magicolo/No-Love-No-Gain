@@ -46,6 +46,11 @@ namespace Magicolo
 			return vector;
 		}
 
+		public static Vector3 Lerp(this Vector3 vector, float target, float time, Axes axes)
+		{
+			return vector.Lerp(new Vector3(target, target, target), time, axes);
+		}
+
 		public static Vector3 LerpLinear(this Vector3 vector, Vector3 target, float time, Axes axes)
 		{
 			Vector3 difference = target - vector;

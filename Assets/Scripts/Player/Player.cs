@@ -14,7 +14,6 @@ public class Player : DamageableBase
 	public Rigidbody2D Rigidbody;
 	public Gravity2D Gravity;
 	public Animator Animator;
-	public SpriteRenderer Renderer;
 	public InputHandler InputHandler;
 
 	float _currentSpeed;
@@ -28,13 +27,17 @@ public class Player : DamageableBase
 	int _isGroundedHash = Animator.StringToHash("IsGrounded");
 	int _isJumpingHash = Animator.StringToHash("IsJumping");
 	int _isFallingHash = Animator.StringToHash("IsFalling");
-	int _isAttackingHash = Animator.StringToHash("IsAttacking");
+	int _isPunchingHash = Animator.StringToHash("IsPunching");
+	int _isHurtHash = Animator.StringToHash("IsHurt");
+	int _isHuggingHash = Animator.StringToHash("IsHugging");
 
 	public bool IsMoving { get; set; }
 	public bool IsGrounded { get; set; }
 	public bool IsJumping { get; set; }
 	public bool IsFalling { get; set; }
-	public bool IsAttacking { get; set; }
+	public bool IsPunching { get; set; }
+	public bool IsHurt { get; set; }
+	public bool IsHugging { get; set; }
 
 	void Start()
 	{
@@ -44,7 +47,7 @@ public class Player : DamageableBase
 	void Update()
 	{
 		UpdatePunch();
-		//UpdateAnimator();
+		UpdateAnimator();
 	}
 
 	void FixedUpdate()
@@ -63,13 +66,16 @@ public class Player : DamageableBase
 			Fists[_currentFist].Punch();
 			_attackSpeedCounter = 1f / Stats.AttackSpeed;
 			_currentFist = (_currentFist + 1) % Fists.Length;
+			IsPunching = true;
 		}
+
+		IsPunching &= _attackSpeedCounter > 0f;
 	}
 
 	void UpdateGrounded()
 	{
 		GroundedSettings.Angle = Gravity.Angle - 90;
-		IsGrounded = GroundedSettings.HasHit(transform.position, Vector3.down, Application.isEditor);
+		IsGrounded = _jumpCounter <= 0f && GroundedSettings.HasHit(transform.position, Vector3.down, Application.isEditor);
 	}
 
 	void UpdateMotion()
@@ -99,22 +105,21 @@ public class Player : DamageableBase
 
 	void UpdateJump()
 	{
-		IsJumping = InputHandler.GetButtonPressed("Jump");
-		IsFalling = IsJumping && !IsGrounded && Rigidbody.velocity.y < 0f;
+		bool jumpButtonPressed = InputHandler.GetButtonPressed("Jump");
+
+		IsJumping = _jumpCounter > 0f && jumpButtonPressed;
+		IsFalling = !IsJumping && !IsGrounded;
 
 		if (IsGrounded && InputHandler.GetButtonDown("Jump"))
 			Jump();
 
-		if (!IsJumping)
-		{
+		if (jumpButtonPressed)
+			_jumpCounter -= Time.fixedDeltaTime;
+		else
 			_jumpCounter = 0f;
-			return;
-		}
 
-		_jumpCounter -= Time.fixedDeltaTime;
-
-		if (_jumpCounter > 0)
-			Rigidbody.Accelerate(_jumpDirection * _jumpIncrement * (_jumpCounter / Stats.JumpMaxDuration), Axes.XY);
+		if (_jumpCounter > 0f)
+			Rigidbody.Accelerate(_jumpDirection * _jumpIncrement * (_jumpCounter / Stats.JumpMaxDuration), Kronos.Player.FixedDeltaTime, Axes.XY);
 	}
 
 	void UpdateAnimator()
@@ -123,7 +128,9 @@ public class Player : DamageableBase
 		Animator.SetBool(_isGroundedHash, IsGrounded);
 		Animator.SetBool(_isJumpingHash, IsJumping);
 		Animator.SetBool(_isFallingHash, IsFalling);
-		Animator.SetBool(_isAttackingHash, IsAttacking);
+		Animator.SetBool(_isPunchingHash, IsPunching);
+		Animator.SetBool(_isHurtHash, IsHurt);
+		Animator.SetBool(_isHuggingHash, IsHugging);
 	}
 
 	Vector2 GetKnockback(Transform target)
@@ -159,6 +166,8 @@ public class Player : DamageableBase
 		_jumpIncrement = (Stats.JumpMaxHeight - Stats.JumpMinHeight) / Stats.JumpMaxDuration;
 		_jumpDirection = -Gravity.Direction;
 		_jumpCounter = Stats.JumpMaxDuration;
+		IsJumping = true;
+		IsGrounded = false;
 	}
 
 	public override void Damage(float damage, DamageSources damageSource, Vector2 knockback = default(Vector2))

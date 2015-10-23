@@ -49,9 +49,7 @@ namespace Magicolo.EditorTools
 				property.boolValue = pressed;
 			}
 			else
-			{
 				EditorGUI.LabelField(_currentPosition, "Button variable must be of type boolean.");
-			}
 
 			End();
 		}
