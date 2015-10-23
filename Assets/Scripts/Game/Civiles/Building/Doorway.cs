@@ -1,1 +1,9 @@
-﻿using UnityEngine;using System.Collections;using Magicolo;using Rick;public class Doorway : MonoBehaviour {		void Start () 	{		}			void Update () 	{		}}
+﻿using UnityEngine;
+using System.Collections;
+using Magicolo;
+using Rick;
+
+public class Doorway : MonoBehaviour
+{
+	public Vector2 ExitDirection;
+}
