@@ -20,6 +20,7 @@ public class Player : DamageableBase
 	int _direction;
 	float _jumpCounter;
 	float _jumpIncrement;
+	bool _jumpButtonPressed;
 	Vector2 _jumpDirection;
 	float _attackSpeedCounter;
 	int _currentFist;
@@ -31,10 +32,10 @@ public class Player : DamageableBase
 	int _isHurtHash = Animator.StringToHash("IsHurt");
 	int _isHuggingHash = Animator.StringToHash("IsHugging");
 
-	public bool IsMoving { get; set; }
+	public bool IsMoving { get { return Mathf.Abs(_currentSpeed) > Stats.MoveSpeed / 1000f; } }
 	public bool IsGrounded { get; set; }
-	public bool IsJumping { get; set; }
-	public bool IsFalling { get; set; }
+	public bool IsJumping { get { return _jumpCounter > 0f && _jumpButtonPressed; } }
+	public bool IsFalling { get { return !IsJumping && !IsGrounded; } }
 	public bool IsPunching { get; set; }
 	public bool IsHurt { get; set; }
 	public bool IsHugging { get; set; }
@@ -82,7 +83,6 @@ public class Player : DamageableBase
 	{
 		_currentSpeed = InputHandler.GetAxis("MotionX") * Stats.MoveSpeed;
 		_direction = _currentSpeed != 0f ? _currentSpeed.Sign() : _direction;
-		IsMoving = Mathf.Abs(_currentSpeed) > Stats.MoveSpeed / 1000f;
 
 		if (Gravity.Angle == 90f)
 			Rigidbody.AccelerateTowards(_currentSpeed, Stats.MoveAcceleration, Kronos.Player.FixedDeltaTime, axes: Axes.X);
@@ -105,15 +105,12 @@ public class Player : DamageableBase
 
 	void UpdateJump()
 	{
-		bool jumpButtonPressed = InputHandler.GetButtonPressed("Jump");
-
-		IsJumping = _jumpCounter > 0f && jumpButtonPressed;
-		IsFalling = !IsJumping && !IsGrounded;
+		_jumpButtonPressed = InputHandler.GetButtonPressed("Jump");
 
 		if (IsGrounded && InputHandler.GetButtonDown("Jump"))
 			Jump();
 
-		if (jumpButtonPressed)
+		if (_jumpButtonPressed)
 			_jumpCounter -= Time.fixedDeltaTime;
 		else
 			_jumpCounter = 0f;
@@ -166,7 +163,7 @@ public class Player : DamageableBase
 		_jumpIncrement = (Stats.JumpMaxHeight - Stats.JumpMinHeight) / Stats.JumpMaxDuration;
 		_jumpDirection = -Gravity.Direction;
 		_jumpCounter = Stats.JumpMaxDuration;
-		IsJumping = true;
+
 		IsGrounded = false;
 	}
 

@@ -11,16 +11,12 @@ namespace Magicolo.PhysicsTools
 		float _angle = 90;
 		public float Angle
 		{
-			get
-			{
-				return _angle;
-			}
+			get { return _angle; }
 			set
 			{
 				_angle = value % 360;
 				_force = (Vector2.right.Rotate(_angle) * _strength).Round(0.0001F);
 				_direction = _force.normalized;
-
 				_hasChanged = true;
 			}
 		}
@@ -29,16 +25,12 @@ namespace Magicolo.PhysicsTools
 		float _strength = 20;
 		public float Strength
 		{
-			get
-			{
-				return _strength;
-			}
+			get { return _strength; }
 			set
 			{
 				_strength = value;
 				_force = (Vector2.right.Rotate(_angle) * _strength).Round(0.0001F);
 				_direction = _force.normalized;
-
 				_hasChanged = true;
 			}
 		}
@@ -47,16 +39,12 @@ namespace Magicolo.PhysicsTools
 		Vector2 _direction = new Vector2(0, -1);
 		public Vector2 Direction
 		{
-			get
-			{
-				return _direction;
-			}
+			get { return _direction; }
 			set
 			{
 				_direction = value.normalized.Round(0.0001F);
 				_force = _direction * _strength;
 				_angle = _direction.Angle();
-
 				_hasChanged = true;
 			}
 		}
@@ -65,17 +53,13 @@ namespace Magicolo.PhysicsTools
 		Vector2 _force = new Vector2(0, -20);
 		public Vector2 Force
 		{
-			get
-			{
-				return _force;
-			}
+			get { return _force; }
 			set
 			{
 				_force = value;
 				_strength = _force.magnitude;
 				_direction = _force.normalized;
 				_angle = _direction.Angle();
-
 				_hasChanged = true;
 			}
 		}
@@ -86,9 +70,7 @@ namespace Magicolo.PhysicsTools
 			get
 			{
 				if (_hasChanged)
-				{
 					UpdateForces();
-				}
 
 				return _right;
 			}
@@ -100,9 +82,7 @@ namespace Magicolo.PhysicsTools
 			get
 			{
 				if (_hasChanged)
-				{
 					UpdateForces();
-				}
 
 				return _right;
 			}

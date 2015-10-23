@@ -20,7 +20,7 @@ namespace Magicolo
 
 		public static void Translate(this Transform transform, Vector3 translation, Axes axes = Axes.XYZ)
 		{
-			transform.SetPosition(transform.position + translation * Time.deltaTime, axes);
+			transform.SetPosition(transform.position + translation, axes);
 		}
 
 		public static void Translate(this Transform transform, float translation, Axes axes = Axes.XYZ)
@@ -68,7 +68,7 @@ namespace Magicolo
 
 		public static void TranslateLocal(this Transform transform, Vector3 translation, Axes axes = Axes.XYZ)
 		{
-			transform.SetLocalPosition(transform.localPosition + translation * Time.deltaTime, axes);
+			transform.SetLocalPosition(transform.localPosition + translation, axes);
 		}
 
 		public static void TranslateLocal(this Transform transform, float translation, Axes axes = Axes.XYZ)
@@ -118,7 +118,7 @@ namespace Magicolo
 
 		public static void Rotate(this Transform transform, Vector3 rotation, Axes axes = Axes.XYZ)
 		{
-			transform.SetEulerAngles(transform.eulerAngles + rotation * Time.deltaTime, axes);
+			transform.SetEulerAngles(transform.eulerAngles + rotation, axes);
 		}
 
 		public static void Rotate(this Transform transform, float rotation, Axes axes = Axes.XYZ)
@@ -166,7 +166,7 @@ namespace Magicolo
 
 		public static void RotateLocal(this Transform transform, Vector3 rotation, Axes axes = Axes.XYZ)
 		{
-			transform.SetLocalEulerAngles(transform.localEulerAngles + rotation * Time.deltaTime, axes);
+			transform.SetLocalEulerAngles(transform.localEulerAngles + rotation, axes);
 		}
 
 		public static void RotateLocal(this Transform transform, float rotation, Axes axes = Axes.XYZ)
@@ -200,48 +200,6 @@ namespace Magicolo
 		public static void OscillateLocalEulerAngles(this Transform transform, float frequency, float amplitude, float center, float time, Axes axes = Axes.XYZ)
 		{
 			transform.OscillateLocalEulerAngles(new Vector3(frequency, frequency, frequency), new Vector3(amplitude, amplitude, amplitude), new Vector3(center, center, center), time, axes);
-		}
-
-		public static Quaternion LookingAt2D(this Transform transform, Vector3 target, float angleOffset, float damping = 100)
-		{
-			Vector3 targetDirection = (target - transform.position).normalized;
-			float angle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg + angleOffset;
-			return Quaternion.Lerp(transform.rotation, Quaternion.AngleAxis(angle, Vector3.forward), damping * Time.deltaTime);
-		}
-
-		public static Quaternion LookingAt2D(this Transform transform, Transform target, float angleOffset, float damping = 100)
-		{
-			return transform.LookingAt2D(target.position, angleOffset, damping);
-		}
-
-		public static Quaternion LookingAt2D(this Transform transform, Vector3 target)
-		{
-			return transform.LookingAt2D(target, 0, 100);
-		}
-
-		public static Quaternion LookingAt2D(this Transform transform, Transform target)
-		{
-			return transform.LookingAt2D(target.position, 0, 100);
-		}
-
-		public static void LookAt2D(this Transform transform, Vector3 target, float angleOffset, float damping = 100)
-		{
-			transform.rotation = transform.LookingAt2D(target, angleOffset, damping);
-		}
-
-		public static void LookAt2D(this Transform transform, Transform target, float angleOffset, float damping = 100)
-		{
-			transform.LookAt2D(target.position, angleOffset, damping);
-		}
-
-		public static void LookAt2D(this Transform transform, Vector3 target)
-		{
-			transform.LookAt2D(target, 0f, 100f);
-		}
-
-		public static void LookAt2D(this Transform transform, Transform target)
-		{
-			transform.LookAt2D(target.position, 0f, 100f);
 		}
 		#endregion
 

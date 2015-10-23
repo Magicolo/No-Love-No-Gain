@@ -1,16 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 namespace Magicolo
 {
 	[AddComponentMenu("Magicolo/General/Smooth/Oscillate")]
-	public class SmoothOscillate : MonoBehaviourExtended
+	public class SmoothOscillate : MonoBehaviourExtended, ICopyable<SmoothOscillate>
 	{
 		[Mask]
 		public TransformModes Mode = TransformModes.Position;
 		[Mask(Axes.XYZ)]
 		public Axes Axes = Axes.XYZ;
+		public Kronos.TimeChannels TimeChannel;
 		public bool Culling = true;
 
 		[Slider(BeforeSeparator = true)]
@@ -25,7 +27,9 @@ namespace Magicolo
 		public float CenterRandomness;
 		public Vector3 Center;
 
+		[DoNotCopy]
 		bool _rendererCached;
+		[DoNotCopy]
 		Renderer _renderer;
 		public Renderer Renderer
 		{
@@ -50,21 +54,35 @@ namespace Magicolo
 			if (!Culling || Renderer.isVisible)
 			{
 				if (Mode.Contains(TransformModes.Position))
-					transform.OscillateLocalPosition(Frequency, Amplitude, Center, Time.time, Axes);
+					transform.OscillateLocalPosition(Frequency, Amplitude, Center, Kronos.GetTime(TimeChannel), Axes);
 
 				if (Mode.Contains(TransformModes.Rotation))
-					transform.OscillateLocalEulerAngles(Frequency, Amplitude, Center, Time.time, Axes);
+					transform.OscillateLocalEulerAngles(Frequency, Amplitude, Center, Kronos.GetTime(TimeChannel), Axes);
 
 				if (Mode.Contains(TransformModes.Scale))
-					transform.OscillateLocalScale(Frequency, Amplitude, Center, Time.time, Axes);
+					transform.OscillateLocalScale(Frequency, Amplitude, Center, Kronos.GetTime(TimeChannel), Axes);
 			}
 		}
 
 		public void ApplyRandomness()
 		{
-			Frequency += Frequency.SetValues(new Vector3(Random.Range(-FrequencyRandomness * Frequency.x, FrequencyRandomness * Frequency.x), Random.Range(-FrequencyRandomness * Frequency.y, FrequencyRandomness * Frequency.y), Random.Range(-FrequencyRandomness * Frequency.z, FrequencyRandomness * Frequency.z)), Axes);
-			Amplitude += Amplitude.SetValues(new Vector3(Random.Range(-AmplitudeRandomness * Amplitude.x, AmplitudeRandomness * Amplitude.x), Random.Range(-AmplitudeRandomness * Amplitude.y, AmplitudeRandomness * Amplitude.y), Random.Range(-AmplitudeRandomness * Amplitude.z, AmplitudeRandomness * Amplitude.z)), Axes);
-			Center += Center.SetValues(new Vector3(Random.Range(-CenterRandomness * Center.x, CenterRandomness * Center.x), Random.Range(-CenterRandomness * Center.y, CenterRandomness * Center.y), Random.Range(-CenterRandomness * Center.z, CenterRandomness * Center.z)), Axes);
+			Frequency += Frequency.SetValues(new Vector3(UnityEngine.Random.Range(-FrequencyRandomness * Frequency.x, FrequencyRandomness * Frequency.x), UnityEngine.Random.Range(-FrequencyRandomness * Frequency.y, FrequencyRandomness * Frequency.y), UnityEngine.Random.Range(-FrequencyRandomness * Frequency.z, FrequencyRandomness * Frequency.z)), Axes);
+			Amplitude += Amplitude.SetValues(new Vector3(UnityEngine.Random.Range(-AmplitudeRandomness * Amplitude.x, AmplitudeRandomness * Amplitude.x), UnityEngine.Random.Range(-AmplitudeRandomness * Amplitude.y, AmplitudeRandomness * Amplitude.y), UnityEngine.Random.Range(-AmplitudeRandomness * Amplitude.z, AmplitudeRandomness * Amplitude.z)), Axes);
+			Center += Center.SetValues(new Vector3(UnityEngine.Random.Range(-CenterRandomness * Center.x, CenterRandomness * Center.x), UnityEngine.Random.Range(-CenterRandomness * Center.y, CenterRandomness * Center.y), UnityEngine.Random.Range(-CenterRandomness * Center.z, CenterRandomness * Center.z)), Axes);
+		}
+
+		public void Copy(SmoothOscillate reference)
+		{
+			Mode = reference.Mode;
+			Axes = reference.Axes;
+			TimeChannel = reference.TimeChannel;
+			Culling = reference.Culling;
+			FrequencyRandomness = reference.FrequencyRandomness;
+			Frequency = reference.Frequency;
+			AmplitudeRandomness = reference.AmplitudeRandomness;
+			Amplitude = reference.Amplitude;
+			CenterRandomness = reference.CenterRandomness;
+			Center = reference.Center;
 		}
 	}
 }

@@ -142,7 +142,7 @@ namespace Magicolo.EditorTools
 				{
 					Type type = types[j];
 
-					if (!type.IsInterface && Array.Exists(type.GetInterfaces(), interfaceType => interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof(ICopyable<>)))
+					if (!type.IsInterface && type.GetCustomAttributes(typeof(DoNotCopyAttribute), false).Length == 0 && Array.Exists(type.GetInterfaces(), interfaceType => interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof(ICopyable<>)))
 						refresh |= UpdateCopyMethod(type);
 				}
 			}
@@ -245,7 +245,7 @@ namespace Magicolo.EditorTools
 			{
 				FieldInfo field = fields[i];
 
-				if (field.IsInitOnly)
+				if (field.IsInitOnly || field.GetCustomAttributes(typeof(DoNotCopyAttribute), false).Length > 0)
 					continue;
 
 				if (field.GetCustomAttributes(true).Contains(typeof(CompilerGeneratedAttribute)) && field.Name.Contains("k__BackingField"))

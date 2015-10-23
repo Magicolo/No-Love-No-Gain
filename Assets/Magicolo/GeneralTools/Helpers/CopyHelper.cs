@@ -10,6 +10,17 @@ namespace Magicolo
 {
 	public static class CopyHelper
 	{
+		public static void CopyTo<T>(T source, ref T target) where T : class, ICopyable<T>
+		{
+			if (source == null || target == null)
+			{
+				target = source;
+				return;
+			}
+
+			target.Copy(source);
+		}
+
 		public static void CopyTo<T>(T[] source, ref T[] target)
 		{
 			if (source == null)
