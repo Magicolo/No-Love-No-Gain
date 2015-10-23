@@ -17,7 +17,7 @@ public class Player : DamageableBase
 	public InputHandler InputHandler;
 
 	float _currentSpeed;
-	int _direction;
+	int _direction = 1;
 	float _jumpCounter;
 	float _jumpIncrement;
 	bool _jumpButtonPressed;
@@ -64,7 +64,8 @@ public class Player : DamageableBase
 
 		if (_attackSpeedCounter <= 0f && InputHandler.GetButtonDown("Punch"))
 		{
-			Fists[_currentFist].Punch();
+			Vector3 targetPosition = transform.position + new Vector3(Stats.Range * _direction, 0f, 0f);
+			Fists[_currentFist].Punch(targetPosition);
 			_attackSpeedCounter = 1f / Stats.AttackSpeed;
 			_currentFist = (_currentFist + 1) % Fists.Length;
 			IsPunching = true;
@@ -82,7 +83,7 @@ public class Player : DamageableBase
 	void UpdateMotion()
 	{
 		_currentSpeed = InputHandler.GetAxis("MotionX") * Stats.MoveSpeed;
-		_direction = _currentSpeed != 0f ? _currentSpeed.Sign() : _direction;
+		_direction = _currentSpeed == 0f ? _direction : _currentSpeed.Sign();
 
 		if (Gravity.Angle == 90f)
 			Rigidbody.AccelerateTowards(_currentSpeed, Stats.MoveAcceleration, Kronos.Player.FixedDeltaTime, axes: Axes.X);

@@ -20,6 +20,12 @@ public class PlayerFist : MonoBehaviourExtended
 	FistStates _state;
 	float _punchCounter;
 	Vector2 _targetPosition;
+	Vector3 _initPosition;
+
+	void Awake()
+	{
+		_initPosition = transform.localPosition;
+	}
 
 	void Start()
 	{
@@ -31,17 +37,24 @@ public class PlayerFist : MonoBehaviourExtended
 		switch (_state)
 		{
 			case FistStates.Idle:
+				UpdateIdle();
 				break;
 			case FistStates.Punching:
 				UpdatePunching();
 				break;
 		}
 
-		transform.localPosition = transform.localPosition.Lerp(_targetPosition.x, Kronos.Player.DeltaTime * Player.Stats.AttackSpeed * 2f, Axes.X);
+	}
+
+	void UpdateIdle()
+	{
+		transform.localPosition = transform.localPosition.Lerp(_initPosition, Kronos.Player.DeltaTime * Player.Stats.AttackSpeed * 2f, Axes.XYZ);
 	}
 
 	void UpdatePunching()
 	{
+		transform.position = transform.position.Lerp(_targetPosition.ToVector3(), Kronos.Player.DeltaTime * Player.Stats.AttackSpeed * 2f, Axes.XYZ);
+
 		_punchCounter -= Kronos.Player.DeltaTime;
 
 		if (_punchCounter <= 0f)
@@ -63,7 +76,6 @@ public class PlayerFist : MonoBehaviourExtended
 		{
 			case FistStates.Idle:
 				Collider.enabled = false;
-				_targetPosition.x = 0f;
 				break;
 			case FistStates.Punching:
 				Collider.enabled = true;
@@ -72,9 +84,9 @@ public class PlayerFist : MonoBehaviourExtended
 		}
 	}
 
-	public void Punch()
+	public void Punch(Vector2 targetPosition)
 	{
-		_targetPosition = _targetPosition.SetValues(Player.Stats.Range, Axes.X);
+		_targetPosition = targetPosition;
 
 		SetState(FistStates.Punching);
 	}

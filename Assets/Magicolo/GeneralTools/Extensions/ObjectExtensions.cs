@@ -187,11 +187,14 @@ namespace Magicolo
 
 		public static object InvokeMethod(this object obj, string methodName, params object[] arguments)
 		{
-			MethodInfo method = obj.GetType().GetMethod(methodName, AllFlags);
+			MethodInfo[] methods = obj.GetType().GetMethods(AllFlags);
 
-			if (method != null)
+			for (int i = 0; i < methods.Length; i++)
 			{
-				return method.Invoke(obj, arguments);
+				MethodInfo method = methods[i];
+
+				if (method.Name == methodName && method.GetParameters().Length == arguments.Length)
+					return method.Invoke(obj, arguments);
 			}
 
 			return null;
