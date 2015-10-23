@@ -39,4 +39,14 @@ public static class BoxCollider2DExtentions
 		float right = collider.offset.x + (collider.size.x / 2f);
 		return collider.transform.TransformPoint(new Vector2(right, btm));
 	}
+
+	//TODO code fucking pas objtimal
+	public static Vector2 GetRandomPoint(this BoxCollider2D collider)
+	{
+		float top = collider.GetTopLeftCorner().y;
+		float left = collider.GetTopLeftCorner().x;
+		float btm = collider.GetBottomRightCorner().y;
+		float right = collider.GetBottomRightCorner().x;
+		return new Vector2(Random.Range(left, right), Random.Range(top, btm));
+	}
 }
