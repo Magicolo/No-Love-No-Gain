@@ -35,14 +35,17 @@ public class Building : MonoBehaviour
 			{
 				CurrentCivilesCount--;
 				Civile civile = BehaviourPool<Civile>.Create(CivilePrefab.GetRandom().GetComponent<Civile>());
-				civile.transform.position = GetRandomDoorLocation();
+				Doorway doorway = doorways.GetRandom();
+				civile.transform.position = doorway.transform.position;
+				if (doorway.ExitDirection.x < 0)
+				{
+					civile.transform.SetEulerAngles(180, Axes.Y);
+				}
+				else
+				{
+					civile.transform.SetEulerAngles(0, Axes.Y);
+				}
 			}
 		}
-	}
-
-	private Vector3 GetRandomDoorLocation()
-	{
-		Doorway doorway = doorways.GetRandom();
-		return doorway.transform.position;
 	}
 }

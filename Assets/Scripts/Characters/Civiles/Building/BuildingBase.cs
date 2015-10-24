@@ -14,4 +14,9 @@ public class BuildingBase : DamageableBase
 	{
 		gameObject.Remove();
 	}
+
+	public override void OnDamaged()
+	{
+		//throw new NotImplementedException();
+	}
 }

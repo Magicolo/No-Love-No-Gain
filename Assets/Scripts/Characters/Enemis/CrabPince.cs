@@ -13,14 +13,18 @@ public class CrabPince : MonoBehaviour
 	public float AttackTime;
 	public float AttackDamage;
 
-	private SpriteRenderer Sprite;
+	SpriteRenderer Sprite;
+	//Animator Animator;
 
 	public enum CrabPinceState { CoolDown, Attacking };
 	public CrabPinceState state;
 
+
+
 	void Start()
 	{
 		this.Sprite = GetComponent<SpriteRenderer>();
+		//this.Animator = transform.parent.GetComponent<Animator>();
 		GoInCoolDown();
 	}
 
@@ -74,7 +78,10 @@ public class CrabPince : MonoBehaviour
 			IDamageable damagable = other.GetComponent<IDamageable>();
 
 			if (damagable != null)
+			{
 				damagable.Damage(AttackDamage, DamageSources.Crabs);
+				GoInCoolDown();
+			}
 		}
 	}
 }

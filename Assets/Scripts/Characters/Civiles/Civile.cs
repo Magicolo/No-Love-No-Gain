@@ -3,8 +3,10 @@ using System.Collections;
 using Magicolo;
 using Rick;
 
-public class Civile : MonoBehaviour, IPoolable, ICopyable<Civile>
+public class Civile : DamageableBaseBase, IPoolable, ICopyable<Civile>
 {
+
+	public float MaxHeath;
 
 	public float MovementSpeed;
 	public float MovementSpeedMin;
@@ -16,7 +18,11 @@ public class Civile : MonoBehaviour, IPoolable, ICopyable<Civile>
 	[Disable]
 	public GameObject GameObjectOnNextFoot;
 
+	[DoNotCopy]
 	private Rigidbody2D body;
+
+	[DoNotCopy]
+	public bool LeftEntrance;
 
 	void Start()
 	{
@@ -24,17 +30,26 @@ public class Civile : MonoBehaviour, IPoolable, ICopyable<Civile>
 		MovementSpeed = Random.Range(MovementSpeedMin, MovementSpeedMax);
 	}
 
-	void ICopyable<Civile>.Copy(Civile reference)
+	public void Copy(Civile reference)
 	{
+		MaxHeath = reference.MaxHeath;
+		MovementSpeed = reference.MovementSpeed;
 		MovementSpeedMin = reference.MovementSpeedMin;
+		MovementSpeedMax = reference.MovementSpeedMax;
+		RaycastDirection = reference.RaycastDirection;
+		RaycastDistance = reference.RaycastDistance;
+		Mask = reference.Mask;
+		GameObjectOnNextFoot = reference.GameObjectOnNextFoot;
 	}
 
-	void IPoolable.OnCreate()
+	public void OnCreate()
 	{
 		MovementSpeed = Random.Range(MovementSpeedMin, MovementSpeedMax);
+		LeftEntrance = false;
+		Health = MaxHeath;
 	}
 
-	void IPoolable.OnRecycle()
+	public void OnRecycle()
 	{
 
 	}
@@ -51,19 +66,27 @@ public class Civile : MonoBehaviour, IPoolable, ICopyable<Civile>
 
 	private void CheckFloorInFront()
 	{
-		RaycastHit2D hit = Physics2D.Raycast(transform.position, RaycastDirection, RaycastDistance, Mask, 0);
-		//Debug.DrawRay(transform.position, RaycastDirection, Color.red);
+		Vector2 rayDirection = RaycastDirection;
+		if (transform.forward.z < 0)
+		{
+			rayDirection = new Vector2(RaycastDirection.x * -1, RaycastDirection.y);
+		}
+		RaycastHit2D hit = Physics2D.Raycast(transform.position, rayDirection, RaycastDistance, Mask, 0);
+		Debug.DrawRay(transform.position, rayDirection, Color.red);
 		GameObjectOnNextFoot = null;
 		if (hit)
-		{
 			GameObjectOnNextFoot = hit.collider.gameObject;
-
-		}
 		else
-		{
-			//transform.FlipLocalScale(Axes.X);
 			transform.Rotate(new Vector3(0, 180, 0));
-			Debug.Log(this.transform.forward);
-		}
+	}
+
+	public override void Die()
+	{
+		BehaviourPool<Civile>.Recycle(this);
+	}
+
+	public override void OnDamaged()
+	{
+
 	}
 }
