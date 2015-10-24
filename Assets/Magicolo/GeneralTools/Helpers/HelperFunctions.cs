@@ -370,6 +370,35 @@ namespace Magicolo
 #endif
 		}
 
+		public static float RandomRange(float min, float max, ProbabilityDistributions distribution)
+		{
+			double randomValue = 0d;
+
+			switch (distribution)
+			{
+				case ProbabilityDistributions.Uniform:
+					randomValue = RandomGenerator.NextDouble();
+					break;
+				case ProbabilityDistributions.Normal:
+					while (true)
+					{
+						double value1 = 2d * RandomGenerator.NextDouble() - 1d;
+						double value2 = 2d * RandomGenerator.NextDouble() - 1d;
+						double w = value1 * value1 + value2 * value2;
+
+						if (w <= 1)
+						{
+							double y = System.Math.Sqrt(-2d * System.Math.Log(w) / w) * 0.125d;
+							randomValue = value1 * y + 0.5f;
+							break;
+						}
+					}
+					break;
+			}
+
+			return Mathf.Clamp((float)(randomValue * (max - min) + min), min, max);
+		}
+
 		public static float RandomFloat()
 		{
 			return (float)RandomDouble();
