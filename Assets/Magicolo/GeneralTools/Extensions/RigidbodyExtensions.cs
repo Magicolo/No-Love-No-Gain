@@ -7,7 +7,6 @@ namespace Magicolo
 {
 	public static class RigidbodyExtensions
 	{
-
 		#region Velocity
 		public static void SetVelocity(this Rigidbody rigidbody, Vector3 velocity, Axes axes = Axes.XYZ)
 		{

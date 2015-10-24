@@ -11,19 +11,18 @@ namespace Magicolo.EditorTools
 {
 	public class CustomPropertyDrawerBase : PropertyDrawer
 	{
-
-		public UnityEngine.Object _target;
-		public UnityEngine.Object[] _targets;
-		public SerializedProperty _currentProperty;
-		public SerializedObject _serializedObject;
-		public Rect _currentPosition;
-		public float _lineHeight;
-		public bool _isArray;
-		public int _index;
-		public float _scrollbarThreshold;
-		public GUIContent _currentLabel = GUIContent.none;
-		public Rect _initPosition;
-		public SerializedProperty _arrayProperty;
+		protected UnityEngine.Object _target;
+		protected UnityEngine.Object[] _targets;
+		protected SerializedProperty _currentProperty;
+		protected SerializedObject _serializedObject;
+		protected Rect _currentPosition;
+		protected float _lineHeight;
+		protected bool _isArray;
+		protected int _index;
+		protected float _scrollbarThreshold;
+		protected GUIContent _currentLabel = GUIContent.none;
+		protected Rect _initPosition;
+		protected SerializedProperty _arrayProperty;
 
 		static MethodInfo _getPropertyDrawerMethod;
 		public static MethodInfo GetPropertyDrawerMethod
@@ -31,18 +30,8 @@ namespace Magicolo.EditorTools
 			get
 			{
 				if (_getPropertyDrawerMethod == null)
-				{
-					foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
-					{
-						foreach (Type type in assembly.GetTypes())
-						{
-							if (type.Name == "ScriptAttributeUtility")
-							{
-								_getPropertyDrawerMethod = type.GetMethod("GetDrawerTypeForType", ObjectExtensions.AllFlags);
-							}
-						}
-					}
-				}
+					_getPropertyDrawerMethod = HelperFunctions.FindType("ScriptAttributeUtility").GetMethod("GetDrawerTypeForType", ObjectExtensions.AllFlags);
+
 				return _getPropertyDrawerMethod;
 			}
 		}
@@ -95,19 +84,7 @@ namespace Magicolo.EditorTools
 		public void ToggleButton(SerializedProperty boolProperty, GUIContent trueLabel, GUIContent falseLabel)
 		{
 			Rect indentedPosition = EditorGUI.IndentedRect(_currentPosition);
-			//Rect labelPosition = new Rect(indentedPosition.x - EditorGUI.indentLevel * 8f, indentedPosition.y, indentedPosition.width, indentedPosition.height);
-
-			//boolProperty.SetValue(EditorGUI.Toggle(indentedPosition, boolProperty.GetValue<bool>(), new GUIStyle("button")));
 			boolProperty.SetValue(ToggleButton(indentedPosition, boolProperty.GetValue<bool>(), trueLabel, falseLabel));
-
-			//GUIStyle style = new GUIStyle("label");
-			//style.clipping = TextClipping.Overflow;
-			//style.alignment = TextAnchor.MiddleCenter;
-
-			//if (boolProperty.GetValue<bool>())
-			//	EditorGUI.LabelField(labelPosition, trueLabel, style);
-			//else
-			//	EditorGUI.LabelField(labelPosition, falseLabel, style);
 
 			_currentPosition.y += _currentPosition.height + 2;
 		}

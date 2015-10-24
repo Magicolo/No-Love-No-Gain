@@ -2,35 +2,35 @@
 using UnityEditor;
 using System.Collections.Generic;
 using Magicolo;
+using System;
 
 namespace Magicolo.EditorTools
 {
 	[CustomEditor(typeof(Transform), true), CanEditMultipleObjects]
 	public class TransformEditor : CustomEditorBase
 	{
-
-		Transform transform;
-		Vector3 pLocalPosition;
-		Vector3 pLocalRotation;
-		Vector3 pLocalScale;
-		bool snap;
-		bool grid;
+		Transform _transform;
+		Vector3 _pLocalPosition;
+		Vector3 _pLocalRotation;
+		Vector3 _pLocalScale;
+		bool _snap;
+		bool _grid;
 
 		// Snap Settings
-		float moveX;
-		float moveY;
-		float moveZ;
-		float rotation;
-		float scale;
-		int gridSize;
-		bool showCubes;
-		bool showLines;
+		float _moveX;
+		float _moveY;
+		float _moveZ;
+		float _rotation;
+		float _scale;
+		int _gridSize;
+		bool _showCubes;
+		bool _showLines;
 
 		public override void OnEnable()
 		{
 			base.OnEnable();
 
-			transform = (Transform)target;
+			_transform = (Transform)target;
 			SnapSettings.CleanUp();
 		}
 
@@ -52,46 +52,44 @@ namespace Magicolo.EditorTools
 			GetSnapSettings();
 			ShowGrid();
 
-			if (snap && !Application.isPlaying)
-			{
+			if (_snap && !Application.isPlaying)
 				RoundSelectedTransforms();
-			}
 		}
 
 		void GetSnapSettings()
 		{
-			moveX = SnapSettings.GetValue<float>("moveX");
-			moveY = SnapSettings.GetValue<float>("moveY");
-			moveZ = SnapSettings.GetValue<float>("moveZ");
-			rotation = SnapSettings.GetValue<float>("rotation");
-			scale = SnapSettings.GetValue<float>("scale");
-			gridSize = SnapSettings.GetValue<int>("gridSize");
-			showCubes = SnapSettings.GetValue<bool>("showCubes");
-			showLines = SnapSettings.GetValue<bool>("showLines");
+			_moveX = SnapSettings.GetValue<float>("moveX");
+			_moveY = SnapSettings.GetValue<float>("moveY");
+			_moveZ = SnapSettings.GetValue<float>("moveZ");
+			_rotation = SnapSettings.GetValue<float>("rotation");
+			_scale = SnapSettings.GetValue<float>("scale");
+			_gridSize = SnapSettings.GetValue<int>("gridSize");
+			_showCubes = SnapSettings.GetValue<bool>("showCubes");
+			_showLines = SnapSettings.GetValue<bool>("showLines");
 		}
 
 		void RoundSelectedTransforms()
 		{
 			foreach (Transform t in Selection.transforms)
 			{
-				if (pLocalPosition != t.localPosition)
+				if (_pLocalPosition != t.localPosition)
 				{
 					Vector3 parentScale = t.parent == null ? Vector3.one : t.parent.lossyScale;
 
-					t.localPosition = t.localPosition.Round(moveX / parentScale.x, Axes.X);
-					t.localPosition = t.localPosition.Round(moveY / parentScale.y, Axes.Y);
-					t.localPosition = t.localPosition.Round(moveZ / parentScale.z, Axes.Z);
-					pLocalPosition = t.localPosition;
+					t.localPosition = t.localPosition.Round(_moveX / parentScale.x, Axes.X);
+					t.localPosition = t.localPosition.Round(_moveY / parentScale.y, Axes.Y);
+					t.localPosition = t.localPosition.Round(_moveZ / parentScale.z, Axes.Z);
+					_pLocalPosition = t.localPosition;
 				}
-				if (pLocalRotation != t.localEulerAngles)
+				if (_pLocalRotation != t.localEulerAngles)
 				{
-					t.localEulerAngles = t.localEulerAngles.Round(rotation);
-					pLocalRotation = t.localEulerAngles;
+					t.localEulerAngles = t.localEulerAngles.Round(_rotation);
+					_pLocalRotation = t.localEulerAngles;
 				}
-				if (pLocalScale != t.localScale)
+				if (_pLocalScale != t.localScale)
 				{
-					t.localScale = t.localScale.Round(scale);
-					pLocalScale = t.localScale;
+					t.localScale = t.localScale.Round(_scale);
+					_pLocalScale = t.localScale;
 				}
 			}
 		}
@@ -118,9 +116,9 @@ namespace Magicolo.EditorTools
 			Separator(false);
 
 			// Snap Button
-			snap = ShowToggleButton("Snap", "Toggles the snapping of the transform to the grid. See Magicolo's Tools/Snap Settings to change the snap settings.", EditorStyles.miniButtonLeft);
+			_snap = ShowToggleButton("Snap", "Toggles the snapping of the transform to the grid. See Magicolo's Tools/Snap Settings to change the snap settings.", EditorStyles.miniButtonLeft);
 			EditorGUI.BeginChangeCheck();
-			grid = ShowToggleButton("Grid", "Toggles the display of the grid. See Magicolo's Tools/Snap Settings to change the grid display settings.", EditorStyles.miniButtonRight);
+			_grid = ShowToggleButton("Grid", "Toggles the display of the grid. See Magicolo's Tools/Snap Settings to change the grid display settings.", EditorStyles.miniButtonRight);
 			if (EditorGUI.EndChangeCheck()) SceneView.RepaintAll();
 
 			// Add Button
@@ -152,14 +150,12 @@ namespace Magicolo.EditorTools
 			const float sensibility = 0.15F;
 
 			Vector3 parentScale = Vector3.one;
-			if (transform.parent != null)
-			{
-				parentScale = transform.parent.lossyScale;
-			}
+			if (_transform.parent != null)
+				parentScale = _transform.parent.lossyScale;
 
-			ShowVectorWithButton(serializedObject.FindProperty("m_LocalPosition"), ". P  .", "Resets the transform's local position to it's initial state.", Vector3.zero, new Vector3(moveX / parentScale.x, moveY / parentScale.y, moveZ / parentScale.z), sensibility);
-			ShowQuaternionWithButton(serializedObject.FindProperty("m_LocalRotation"), ". R  .", "Resets the transform's local rotation to it's initial state.", Quaternion.identity, new Vector3(rotation, rotation, rotation), sensibility);
-			ShowVectorWithButton(serializedObject.FindProperty("m_LocalScale"), ". S  .", "Resets the transform's local scale to it's initial state.", Vector3.one, new Vector3(scale, scale, scale), sensibility);
+			ShowVectorWithButton(serializedObject.FindProperty("m_LocalPosition"), ". P  .", "Resets the transform's local position to it's initial state.", Vector3.zero, new Vector3(_moveX / parentScale.x, _moveY / parentScale.y, _moveZ / parentScale.z), sensibility);
+			ShowQuaternionWithButton(serializedObject.FindProperty("m_LocalRotation"), ". R  .", "Resets the transform's local rotation to it's initial state.", Quaternion.identity, new Vector3(_rotation, _rotation, _rotation), sensibility);
+			ShowVectorWithButton(serializedObject.FindProperty("m_LocalScale"), ". S  .", "Resets the transform's local scale to it's initial state.", Vector3.one, new Vector3(_scale, _scale, _scale), sensibility);
 		}
 
 		void ShowVectorWithButton(SerializedProperty vectorProperty, string buttonLabel, string tooltip, Vector3 resetValue, Vector3 roundValue, float sensibility)
@@ -183,7 +179,7 @@ namespace Magicolo.EditorTools
 			EditorGUILayout.PropertyField(vectorProperty.FindPropertyRelative("x"));
 			if (EditorGUI.EndChangeCheck())
 			{
-				if (snap && !deleteBreak && !Application.isPlaying)
+				if (_snap && !deleteBreak && !Application.isPlaying)
 				{
 					if (Mathf.Abs(Event.current.delta.x) > 0)
 					{
@@ -199,7 +195,7 @@ namespace Magicolo.EditorTools
 			EditorGUILayout.PropertyField(vectorProperty.FindPropertyRelative("y"));
 			if (EditorGUI.EndChangeCheck())
 			{
-				if (snap && !deleteBreak && !Application.isPlaying)
+				if (_snap && !deleteBreak && !Application.isPlaying)
 				{
 					if (Mathf.Abs(Event.current.delta.x) > 0)
 					{
@@ -215,7 +211,7 @@ namespace Magicolo.EditorTools
 			EditorGUILayout.PropertyField(vectorProperty.FindPropertyRelative("z"));
 			if (EditorGUI.EndChangeCheck())
 			{
-				if (snap && !deleteBreak && !Application.isPlaying)
+				if (_snap && !deleteBreak && !Application.isPlaying)
 				{
 					if (Mathf.Abs(Event.current.delta.x) > 0)
 					{
@@ -236,8 +232,7 @@ namespace Magicolo.EditorTools
 		{
 			float labelWidth = EditorGUIUtility.labelWidth;
 			EditorGUIUtility.labelWidth = 15;
-
-			EditorGUILayout.BeginHorizontal();
+			Rect rect = EditorGUILayout.BeginHorizontal();
 
 			if (GUILayout.Button(new GUIContent(buttonLabel, tooltip), EditorStyles.miniButton, GUILayout.Width(20)))
 			{
@@ -247,27 +242,28 @@ namespace Magicolo.EditorTools
 				return;
 			}
 
-			Vector3 localEulerAngles = transform.localEulerAngles;
-
+			Vector3 localEulerAngles = _transform.localEulerAngles;
+			EditorGUI.BeginProperty(rect, GUIContent.none, quaternionProperty);
 			EditorGUI.BeginChangeCheck();
+
 			localEulerAngles.x = EditorGUILayout.FloatField("X", localEulerAngles.x % 360) % 360;
 			if (EditorGUI.EndChangeCheck())
 			{
 				Undo.RegisterCompleteObjectUndo(targets, "Transform Rotate X");
-				if (snap && !deleteBreak && !Application.isPlaying)
+				if (_snap && !deleteBreak && !Application.isPlaying)
 				{
 					if (Mathf.Abs(Event.current.delta.x) > 0)
 					{
-						localEulerAngles.x = (transform.localEulerAngles.x + Event.current.delta.x * roundValue.x * sensibility);
+						localEulerAngles.x = (_transform.localEulerAngles.x + Event.current.delta.x * roundValue.x * sensibility);
 					}
 
 					localEulerAngles.x = localEulerAngles.x.Round(roundValue.x) % 360;
 				}
 
-				transform.SetLocalEulerAngles(localEulerAngles, Axes.X);
+				_transform.SetLocalEulerAngles(localEulerAngles, Axes.X);
 				foreach (Transform t in Selection.transforms)
 				{
-					t.SetLocalEulerAngles(transform.localEulerAngles, Axes.X);
+					t.SetLocalEulerAngles(_transform.localEulerAngles, Axes.X);
 					EditorUtility.SetDirty(t);
 				}
 			}
@@ -277,20 +273,20 @@ namespace Magicolo.EditorTools
 			if (EditorGUI.EndChangeCheck())
 			{
 				Undo.RegisterCompleteObjectUndo(targets, "Transform Rotate Y");
-				if (snap && !deleteBreak && !Application.isPlaying)
+				if (_snap && !deleteBreak && !Application.isPlaying)
 				{
 					if (Mathf.Abs(Event.current.delta.x) > 0)
 					{
-						localEulerAngles.y = (transform.localEulerAngles.y + Event.current.delta.x * roundValue.y * sensibility);
+						localEulerAngles.y = (_transform.localEulerAngles.y + Event.current.delta.x * roundValue.y * sensibility);
 					}
 
 					localEulerAngles.y = localEulerAngles.y.Round(roundValue.y) % 360;
 				}
 
-				transform.SetLocalEulerAngles(localEulerAngles, Axes.Y);
+				_transform.SetLocalEulerAngles(localEulerAngles, Axes.Y);
 				foreach (Transform t in Selection.transforms)
 				{
-					t.SetLocalEulerAngles(transform.localEulerAngles, Axes.Y);
+					t.SetLocalEulerAngles(_transform.localEulerAngles, Axes.Y);
 					EditorUtility.SetDirty(t);
 				}
 			}
@@ -300,57 +296,57 @@ namespace Magicolo.EditorTools
 			if (EditorGUI.EndChangeCheck())
 			{
 				Undo.RegisterCompleteObjectUndo(targets, "Transform Rotate Z");
-				if (snap && !deleteBreak && !Application.isPlaying)
+				if (_snap && !deleteBreak && !Application.isPlaying)
 				{
 					if (Mathf.Abs(Event.current.delta.x) > 0)
 					{
-						localEulerAngles.z = (transform.localEulerAngles.z + Event.current.delta.x * roundValue.z * sensibility);
+						localEulerAngles.z = (_transform.localEulerAngles.z + Event.current.delta.x * roundValue.z * sensibility);
 					}
 
 					localEulerAngles.z = localEulerAngles.z.Round(roundValue.z) % 360;
 				}
 
-				transform.SetLocalEulerAngles(localEulerAngles, Axes.Z);
+				_transform.SetLocalEulerAngles(localEulerAngles, Axes.Z);
 				foreach (Transform t in Selection.transforms)
 				{
-					t.SetLocalEulerAngles(transform.localEulerAngles, Axes.Z);
+					t.SetLocalEulerAngles(_transform.localEulerAngles, Axes.Z);
 					EditorUtility.SetDirty(t);
 				}
 			}
 
 			EditorGUILayout.EndHorizontal();
-
+			EditorGUI.EndProperty();
 			EditorGUIUtility.labelWidth = labelWidth;
 		}
 
 		void ShowGrid()
 		{
-			if (grid && !Application.isPlaying)
+			if (_grid && !Application.isPlaying)
 			{
-				if (Selection.activeTransform == transform)
+				if (Selection.activeTransform == _transform)
 				{
 					bool is3D = SceneView.currentDrawingSceneView == null || !SceneView.currentDrawingSceneView.in2DMode;
-					float size = 0.1F * ((moveX + moveY + moveZ) / 3);
+					float size = 0.1F * ((_moveX + _moveY + _moveZ) / 3);
 					const float alphaFactor = 1.25F;
 					float alpha = alphaFactor / 2;
 
-					for (int y = -gridSize; y <= gridSize; y++)
+					for (int y = -_gridSize; y <= _gridSize; y++)
 					{
-						for (int x = -gridSize; x <= gridSize; x++)
+						for (int x = -_gridSize; x <= _gridSize; x++)
 						{
 							if (alpha.Round(0.1f) > 0)
 							{
 								// X Squares
 								Handles.lighting = false;
 								Handles.color = new Color(0.1F, 0.25F, 0.75F, alpha);
-								Vector3 offset = new Vector3(x * moveX, y * moveY, 0);
-								Vector3 position = transform.position + offset;
+								Vector3 offset = new Vector3(x * _moveX, y * _moveY, 0);
+								Vector3 position = _transform.position + offset;
 
-								position.x = position.x.Round(moveX);
-								position.y = position.y.Round(moveY);
-								position.z = position.z.Round(moveZ);
+								position.x = position.x.Round(_moveX);
+								position.y = position.y.Round(_moveY);
+								position.z = position.z.Round(_moveZ);
 
-								if (showCubes)
+								if (_showCubes)
 								{
 									if (SceneView.currentDrawingSceneView != null)
 									{
@@ -363,18 +359,18 @@ namespace Magicolo.EditorTools
 								}
 
 								// X Lines
-								if (showLines)
+								if (_showLines)
 								{
 									Handles.color = new Color(0.1F, 0.25F, 0.75F, alpha / 2);
 
-									if (x == gridSize)
+									if (x == _gridSize)
 									{
-										Handles.DrawLine(new Vector3(transform.position.x - offset.x, position.y, position.z), position);
+										Handles.DrawLine(new Vector3(_transform.position.x - offset.x, position.y, position.z), position);
 									}
 
-									if (y == gridSize)
+									if (y == _gridSize)
 									{
-										Handles.DrawLine(new Vector3(position.x, transform.position.y - offset.y, position.z), position);
+										Handles.DrawLine(new Vector3(position.x, _transform.position.y - offset.y, position.z), position);
 									}
 								}
 
@@ -387,14 +383,14 @@ namespace Magicolo.EditorTools
 								{
 									// Y Squares
 									Handles.color = new Color(0.75F, 0.35F, 0.1F, alpha);
-									offset = new Vector3(x * moveX, 0, y * moveZ);
-									position = transform.position + offset;
+									offset = new Vector3(x * _moveX, 0, y * _moveZ);
+									position = _transform.position + offset;
 
-									position.x = position.x.Round(moveX);
-									position.y = position.y.Round(moveY);
-									position.z = position.z.Round(moveZ);
+									position.x = position.x.Round(_moveX);
+									position.y = position.y.Round(_moveY);
+									position.z = position.z.Round(_moveZ);
 
-									if (showCubes)
+									if (_showCubes)
 									{
 										if (SceneView.currentDrawingSceneView != null)
 										{
@@ -407,17 +403,17 @@ namespace Magicolo.EditorTools
 									}
 
 									// Y Lines
-									if (showLines)
+									if (_showLines)
 									{
 										Handles.color = new Color(0.75F, 0.35F, 0.1F, alpha / 2);
-										if (x == gridSize)
+										if (x == _gridSize)
 										{
-											Handles.DrawLine(new Vector3(transform.position.x - offset.x, position.y, position.z), position);
+											Handles.DrawLine(new Vector3(_transform.position.x - offset.x, position.y, position.z), position);
 										}
 
-										if (y == gridSize)
+										if (y == _gridSize)
 										{
-											Handles.DrawLine(new Vector3(position.x, position.y, transform.position.z - offset.z), position);
+											Handles.DrawLine(new Vector3(position.x, position.y, _transform.position.z - offset.z), position);
 										}
 									}
 								}
@@ -426,14 +422,14 @@ namespace Magicolo.EditorTools
 								{
 									// Z Squares
 									Handles.color = new Color(0.75F, 0, 0.25F, alpha);
-									offset = new Vector3(0, y * moveY, x * moveZ);
-									position = transform.position + offset;
+									offset = new Vector3(0, y * _moveY, x * _moveZ);
+									position = _transform.position + offset;
 
-									position.x = position.x.Round(moveX);
-									position.y = position.y.Round(moveY);
-									position.z = position.z.Round(moveZ);
+									position.x = position.x.Round(_moveX);
+									position.y = position.y.Round(_moveY);
+									position.z = position.z.Round(_moveZ);
 
-									if (showCubes)
+									if (_showCubes)
 									{
 										if (SceneView.currentDrawingSceneView != null)
 										{
@@ -446,17 +442,17 @@ namespace Magicolo.EditorTools
 									}
 
 									// Z Lines
-									if (showLines)
+									if (_showLines)
 									{
 										Handles.color = new Color(0.75F, 0, 0.25F, alpha / 2);
-										if (y == gridSize)
+										if (y == _gridSize)
 										{
-											Handles.DrawLine(new Vector3(position.x, transform.position.y - offset.y, position.z), position);
+											Handles.DrawLine(new Vector3(position.x, _transform.position.y - offset.y, position.z), position);
 										}
 
-										if (x == gridSize)
+										if (x == _gridSize)
 										{
-											Handles.DrawLine(new Vector3(position.x, position.y, transform.position.z - offset.z), position);
+											Handles.DrawLine(new Vector3(position.x, position.y, _transform.position.z - offset.z), position);
 										}
 									}
 								}
@@ -470,7 +466,7 @@ namespace Magicolo.EditorTools
 
 		bool ShowToggleButton(string buttonLabel, string tooltip, GUIStyle buttonStyle)
 		{
-			bool pressed = SnapSettings.GetValue<bool>("Toggle" + buttonLabel + transform.GetInstanceID());
+			bool pressed = SnapSettings.GetValue<bool>("Toggle" + buttonLabel + _transform.GetInstanceID());
 			float width = buttonLabel.GetWidth(EditorStyles.miniFont) + 12;
 			int spacing = buttonStyle == EditorStyles.miniButtonLeft ? -6 : 0;
 
@@ -487,7 +483,7 @@ namespace Magicolo.EditorTools
 				EditorGUI.LabelField(new Rect(position.x + 8, position.y + 1, width, position.height - 1), new GUIContent(buttonLabel, tooltip), EditorStyles.miniLabel);
 			}
 
-			if (pressed != SnapSettings.GetValue<bool>("Toggle" + buttonLabel + transform.GetInstanceID()))
+			if (pressed != SnapSettings.GetValue<bool>("Toggle" + buttonLabel + _transform.GetInstanceID()))
 			{
 				foreach (Transform t in Selection.transforms)
 				{
@@ -497,7 +493,7 @@ namespace Magicolo.EditorTools
 			}
 			EditorGUILayout.EndVertical();
 
-			return SnapSettings.GetValue<bool>("Toggle" + buttonLabel + transform.GetInstanceID());
+			return SnapSettings.GetValue<bool>("Toggle" + buttonLabel + _transform.GetInstanceID());
 		}
 	}
 }

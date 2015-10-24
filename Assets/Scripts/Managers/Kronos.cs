@@ -24,6 +24,7 @@ public class Kronos : Singleton<Kronos>
 
 	public enum TimeChannels
 	{
+		Unity,
 		UI,
 		World,
 		Player,
@@ -31,22 +32,12 @@ public class Kronos : Singleton<Kronos>
 		Count
 	}
 
-	List<TimeChannel> _channels = new List<TimeChannel>();
-
-	public static TimeChannel UI = new TimeChannel(TimeChannels.UI);
-	public static TimeChannel World = new TimeChannel(TimeChannels.World);
-	public static TimeChannel Player = new TimeChannel(TimeChannels.Player);
-	public static TimeChannel Enemy = new TimeChannel(TimeChannels.Enemy);
-
-	protected override void Awake()
-	{
-		base.Awake();
-
-		_channels.Add(UI);
-		_channels.Add(World);
-		_channels.Add(Player);
-		_channels.Add(Enemy);
-	}
+	readonly static TimeChannel Unity = new TimeChannel(TimeChannels.Unity);
+	public readonly static TimeChannel UI = new TimeChannel(TimeChannels.UI);
+	public readonly static TimeChannel World = new TimeChannel(TimeChannels.World);
+	public readonly static TimeChannel Player = new TimeChannel(TimeChannels.Player);
+	public readonly static TimeChannel Enemy = new TimeChannel(TimeChannels.Enemy);
+	readonly static List<TimeChannel> _channels = new List<TimeChannel>() { Unity, UI, World, Player, Enemy };
 
 	void Update()
 	{
@@ -67,32 +58,27 @@ public class Kronos : Singleton<Kronos>
 		}
 	}
 
-	public TimeChannel GetTimeChannel(TimeChannels channel)
-	{
-		return _channels[(int)channel];
-	}
-
-	public float GetDeltaTime(TimeChannels channel)
+	public static float GetDeltaTime(TimeChannels channel)
 	{
 		return _channels[(int)channel].DeltaTime;
 	}
 
-	public float GetFixedDeltaTime(TimeChannels channel)
+	public static float GetFixedDeltaTime(TimeChannels channel)
 	{
 		return _channels[(int)channel].FixedDeltaTime;
 	}
 
-	public float GetTime(TimeChannels channel)
+	public static float GetTime(TimeChannels channel)
 	{
 		return _channels[(int)channel].Time;
 	}
 
-	public float GetTimeScale(TimeChannels channel)
+	public static float GetTimeScale(TimeChannels channel)
 	{
 		return _channels[(int)channel].TimeScale;
 	}
 
-	public void SetTimeScale(TimeChannels channel, float timeScale)
+	public static void SetTimeScale(TimeChannels channel, float timeScale)
 	{
 		_channels[(int)channel].TimeScale = timeScale;
 	}

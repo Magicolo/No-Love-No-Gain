@@ -142,7 +142,7 @@ namespace Magicolo.EditorTools
 				{
 					Type type = types[j];
 
-					if (!type.IsInterface && Array.Exists(type.GetInterfaces(), interfaceType => interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof(ICopyable<>)))
+					if (!type.IsInterface && type.GetCustomAttributes(typeof(DoNotCopyAttribute), false).Length == 0 && Array.Exists(type.GetInterfaces(), interfaceType => interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == typeof(ICopyable<>)))
 						refresh |= UpdateCopyMethod(type);
 				}
 			}
@@ -228,16 +228,16 @@ namespace Magicolo.EditorTools
 			for (int i = 0; i < indent - 1; i++)
 				indentString += "	";
 
-			string body = "public void Copy(" + typeName + " reference)" + Environment.NewLine;
+			string body = "public void Copy(" + typeName + " reference)\n";
 
 			indentString += '	';
 
-			body += indentString + "{" + Environment.NewLine;
+			body += indentString + "{\n";
 
 			indentString += '	';
 
 			if (type.BaseType != null && typeof(ICopyable<>).MakeGenericType(type.BaseType).IsAssignableFrom(type.BaseType))
-				body += indentString + "base.Copy(reference);" + Environment.NewLine + Environment.NewLine;
+				body += indentString + "base.Copy(reference);\n\n";
 
 			FieldInfo[] fields = type.GetFields(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
 
@@ -245,7 +245,7 @@ namespace Magicolo.EditorTools
 			{
 				FieldInfo field = fields[i];
 
-				if (field.IsInitOnly)
+				if (field.IsInitOnly || field.GetCustomAttributes(typeof(DoNotCopyAttribute), false).Length > 0)
 					continue;
 
 				if (field.GetCustomAttributes(true).Contains(typeof(CompilerGeneratedAttribute)) && field.Name.Contains("k__BackingField"))
@@ -268,9 +268,9 @@ namespace Magicolo.EditorTools
 			if (!membersToIgnore.Contains(fieldName))
 			{
 				if (fieldType.IsArray || typeof(ICollection).IsAssignableFrom(fieldType))
-					line += indentString + "CopyHelper.CopyTo(reference." + fieldName + ", ref " + fieldName + ");" + Environment.NewLine;
+					line += indentString + "CopyHelper.CopyTo(reference." + fieldName + ", ref " + fieldName + ");\n";
 				else
-					line += indentString + fieldName + " = reference." + fieldName + ";" + Environment.NewLine;
+					line += indentString + fieldName + " = reference." + fieldName + ";\n";
 			}
 
 			return line;

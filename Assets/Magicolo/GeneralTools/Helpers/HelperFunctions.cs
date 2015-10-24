@@ -34,6 +34,19 @@ namespace Magicolo
 			return Mathf.Sqrt(Mathf.Pow(a, 2) + Mathf.Pow(b, 2));
 		}
 
+		public static System.Type FindType(string typeName)
+		{
+			for (int i = 0; i < TypeExtensions.AllTypes.Length; i++)
+			{
+				System.Type type = TypeExtensions.AllTypes[i];
+
+				if (type.Name.Contains(typeName))
+					return type;
+			}
+
+			return null;
+		}
+
 		public static void AddReference(Object asset)
 		{
 #if UNITY_EDITOR
