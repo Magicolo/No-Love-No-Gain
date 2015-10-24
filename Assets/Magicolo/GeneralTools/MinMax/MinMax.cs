@@ -22,4 +22,20 @@ public struct MinMax
 		_min = min;
 		_max = max;
 	}
+
+	public float GetRandom(ProbabilityDistributions distribution)
+	{
+		double randomValue = 0d;
+
+		switch (distribution)
+		{
+			case ProbabilityDistributions.Uniform:
+				randomValue = HelperFunctions.RandomDouble();
+				break;
+			case ProbabilityDistributions.Normal:
+				break;
+		}
+
+		return (float)randomValue;
+	}
 }
