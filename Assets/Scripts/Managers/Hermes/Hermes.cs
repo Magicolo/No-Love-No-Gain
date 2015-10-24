@@ -7,19 +7,22 @@ using Rick;
 public class Hermes : Singleton<Hermes>
 {
 	List<PlateformPath> Paths = new List<PlateformPath>();
-	public int startingPopulation;
+	//public int startingPopulation; // SUPER UNUSED
+
+	public List<Civile> CivilePrefabs;
+
 
 	[Button("Refresh Paths ", "RefreshPathsLines")]
 	public bool RefreshPaths;
 
 	void Start()
 	{
-		Building[] buildings = Object.FindObjectsOfType<Building>();
+		/*Building[] buildings = Object.FindObjectsOfType<Building>();
 		int nbBuilding = buildings.Length;
 		foreach (var building in buildings)
 		{
 			building.CurrentCivilesCount = startingPopulation / nbBuilding;
-		}
+		}*/
 	}
 
 

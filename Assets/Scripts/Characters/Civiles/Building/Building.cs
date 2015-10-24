@@ -13,9 +13,6 @@ public class Building : MonoBehaviour
 	public float GetOutTimeMin;
 	public float GetOutTimeMax;
 
-	public List<Civile> CivilePrefab;
-	public Transform CivilParent;
-
 	Doorway[] doorways;
 
 	void Start()
@@ -34,7 +31,7 @@ public class Building : MonoBehaviour
 			if (CurrentCivilesCount > 0)
 			{
 				CurrentCivilesCount--;
-				Civile civile = BehaviourPool<Civile>.Create(CivilePrefab.GetRandom());
+				Civile civile = BehaviourPool<Civile>.Create(Hermes.Instance.CivilePrefabs.GetRandom());
 				Doorway doorway = doorways.GetRandom();
 				civile.transform.position = doorway.transform.position;
 				if (doorway.ExitDirection.x < 0)

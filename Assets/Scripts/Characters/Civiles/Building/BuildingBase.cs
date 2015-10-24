@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System;
+using Magicolo;
 using Rick;
 
 public class BuildingBase : DamageableBase
 {
 
+	[Disable]
 	public BoxCollider2D BoxCollider;
 
 	void Start()

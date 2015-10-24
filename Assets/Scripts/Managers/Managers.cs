@@ -8,6 +8,7 @@ public class Managers : MonoBehaviourExtended
 	public Kronos KronosPrefab;
 	public Mars MarsPrefab;
 	public Aphrodite AphroditePrefab;
+	public Hermes HermesPrefab;
 
 	void Awake()
 	{
@@ -24,5 +25,9 @@ public class Managers : MonoBehaviourExtended
 
 		if (Aphrodite.Instance == null)
 			Instantiate(AphroditePrefab).transform.parent = transform;
+
+
+		if (Hermes.Instance == null)
+			Instantiate(HermesPrefab).transform.parent = transform;
 	}
 }
