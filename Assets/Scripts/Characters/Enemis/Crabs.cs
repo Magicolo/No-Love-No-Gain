@@ -77,6 +77,10 @@ public class Crabs : DamageableBaseBase
 			targetMovement = MouvementSpeed * (CrabTarget.transform.position - transform.position).normalized;
 			targetMovement = targetMovement.SetValues(0, Axes.Y);
 		}
+		else
+		{
+			targetMovement = Vector2.zero;
+		}
 	}
 
 	private void AttackPlayer()
