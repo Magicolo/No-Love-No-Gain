@@ -16,12 +16,12 @@ public class AreaSpawner : BaseSpawner
 	public float SpawnMax;
 	public GameObject prefabToSpawn;
 
-	BoxCollider2D spawningZone;
+	RectZone rectZone;
 
 	void Start()
 	{
 		Timer = Random.Range(CoolDownMin, CoolDownMax);
-		spawningZone = GetComponent<BoxCollider2D>();
+		rectZone = GetComponent<RectZone>();
 	}
 
 	public override void Update()
@@ -37,7 +37,7 @@ public class AreaSpawner : BaseSpawner
 		Timer = Random.Range(CoolDownMin, CoolDownMax);
 		for (int i = 0; i < Random.Range(SpawnMax, SpawnMax); i++)
 		{
-			GameObjectFactory.createClone(prefabToSpawn, this.transform, spawningZone.GetRandomPoint());
+			GameObjectFactory.createClone(prefabToSpawn, this.transform, rectZone.WorldRect.GetRandomPoint());
 		}
 	}
 }
