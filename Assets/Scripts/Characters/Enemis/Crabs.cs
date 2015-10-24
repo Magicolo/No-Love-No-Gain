@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Magicolo;
+using System;
 
-public class Crabs : DamageableBaseBase
+public class Crabs : DamageableBase
 {
 	[Disable]
 	public CrabPince[] Pinces;
@@ -28,7 +29,15 @@ public class Crabs : DamageableBaseBase
 
 	public override void Die()
 	{
-		this.Destroy();
+		gameObject.Destroy();
+	}
+
+	public override void Damage(float damage, DamageSources damageSource, Vector2 knockback = default(Vector2))
+	{
+		base.Damage(damage, damageSource, knockback);
+
+		Body.AddForce(knockback);
+		CrabTarget = null;
 	}
 
 	void Start()
@@ -36,11 +45,6 @@ public class Crabs : DamageableBaseBase
 		Pinces = GetComponentsInChildren<CrabPince>();
 		Animator = GetComponent<Animator>();
 		Body = GetComponent<Rigidbody2D>();
-	}
-
-	public override void OnDamaged()
-	{
-		CrabTarget = null;
 	}
 
 	void Update()
@@ -61,7 +65,7 @@ public class Crabs : DamageableBaseBase
 
 		if (CrabTarget == null)
 		{
-			T thing = transform.GetClosest<T>(Object.FindObjectsOfType<T>());
+			T thing = transform.GetClosest<T>(FindObjectsOfType<T>());
 			if (thing)
 			{
 				CrabTarget = thing.gameObject;
@@ -87,7 +91,9 @@ public class Crabs : DamageableBaseBase
 	{
 		if (CrabTarget == null)
 		{
-			CrabTarget = transform.GetClosest<Player>(Object.FindObjectsOfType<Player>()).gameObject;
+			Player player = transform.GetClosest(FindObjectsOfType<Player>());
+
+			CrabTarget = player == null ? null : player.gameObject;
 		}
 	}
 

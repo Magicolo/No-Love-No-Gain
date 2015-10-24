@@ -3,9 +3,8 @@ using System.Collections;
 using Magicolo;
 using Rick;
 
-public class Civile : DamageableBaseBase, IPoolable, ICopyable<Civile>
+public class Civile : DamageableBase, IPoolable, ICopyable<Civile>
 {
-
 	public float MaxHeath;
 
 	public float MovementSpeed;
@@ -83,10 +82,5 @@ public class Civile : DamageableBaseBase, IPoolable, ICopyable<Civile>
 	public override void Die()
 	{
 		BehaviourPool<Civile>.Recycle(this);
-	}
-
-	public override void OnDamaged()
-	{
-
 	}
 }

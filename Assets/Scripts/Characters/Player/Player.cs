@@ -175,28 +175,8 @@ public class Player : DamageableBase
 		Rigidbody.AddForce(knockback);
 	}
 
-	public override bool CanBeDamagedBy(DamageSources damageSource)
-	{
-		switch (damageSource)
-		{
-			case DamageSources.Player:
-				return true;
-			case DamageSources.Crabs:
-				return true;
-			case DamageSources.Population:
-				return true;
-		}
-
-		return false;
-	}
-
 	public override void Die()
 	{
 
-	}
-
-	public override void OnDamaged()
-	{
-		Debug.Log("I LOVE YOU!");
 	}
 }
