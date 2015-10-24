@@ -7,7 +7,7 @@ using Rick;
 public class SingleRayCast
 {
 
-	[SerializeField, PropertyField, Min(0), Max(360)]
+	[SerializeField, PropertyField(typeof(ClampAttribute), 0f, 360f)]
 	float angle;
 	public float Angle
 	{
@@ -15,7 +15,7 @@ public class SingleRayCast
 		set
 		{
 			angle = value;
-			RaycastDirection = new Vector2(1, 0).Rotate(angle);
+			RaycastDirection = Vector2.right.Rotate(angle);
 		}
 	}
 	[Disable]
@@ -38,28 +38,29 @@ public class SingleRayCast
 		}
 	}
 
-	public RaycastHit GetHit(Vector3 origin)
+	public RaycastHit2D GetHit(Vector3 origin)
 	{
 		Vector3 adjustedOrigin = (origin + offset.ToVector3());
 		if (ShowRayCast)
 			Debug.DrawRay(adjustedOrigin, RaycastDirection * RaycastDistance, Color.green);
 
-		RaycastHit hit;
-		if (Physics.Raycast(adjustedOrigin, RaycastDirection, out hit, RaycastDistance, Mask, 0))
-		{
-			Debug.Log("YES");
-		}
-		return hit;
+		return Physics2D.Raycast(adjustedOrigin, RaycastDirection, RaycastDistance, Mask, 0);
 	}
 
-	public GameObject getHitGameObject(Vector3 origin)
+	public GameObject GetHitGameObject(Vector3 origin)
 	{
-		RaycastHit hit = GetHit(origin);
-
+		RaycastHit2D hit = GetHit(origin);
 		if (hit.collider)
 			return hit.collider.gameObject;
 		else
 			return null;
 
+	}
+
+	public void FlipX()
+	{
+		RaycastDirection = Vector2.Reflect(RaycastDirection, Vector2.right);
+		angle = RaycastDirection.Angle();
+		offset = new Vector2(-offset.x, offset.y);
 	}
 }

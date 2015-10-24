@@ -27,6 +27,7 @@ public class Crabs : DamageableBase
 
 	public float MouvementSpeed = 2;
 
+	public LayerMask FlipWhenSeeing;
 	public SingleRayCast GroundRayCast;
 	[Disable]
 	public GameObject ForwardGroundGameObject;
@@ -53,7 +54,7 @@ public class Crabs : DamageableBase
 
 	void Update()
 	{
-		ForwardGroundGameObject = GroundRayCast.getHitGameObject(transform.position);
+		ForwardGroundGameObject = GroundRayCast.GetHitGameObject(transform.position);
 		switch (CrabBehavior)
 		{
 			case CrabBehaviors.AimlessWalks: AimlessWalk(); break;
@@ -108,7 +109,12 @@ public class Crabs : DamageableBase
 
 	private void AimlessWalk()
 	{
-
+		if (!ForwardGroundGameObject || FlipWhenSeeing.Contains(ForwardGroundGameObject.layer))
+		{
+			transform.Rotate(new Vector3(0, 180, 0));
+			GroundRayCast.FlipX();
+		}
+		targetMovement = new Vector2(this.MouvementSpeed * transform.forward.z, 0);
 	}
 
 	private void CheckTargetIsActiveOrGetClosest<T>() where T : MonoBehaviour
