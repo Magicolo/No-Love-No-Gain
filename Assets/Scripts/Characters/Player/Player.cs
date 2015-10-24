@@ -40,11 +40,6 @@ public class Player : DamageableBase
 	public bool IsHurt { get; set; }
 	public bool IsHugging { get; set; }
 
-	void Start()
-	{
-		Health = Stats.MaxHealth;
-	}
-
 	void Update()
 	{
 		UpdatePunch();
@@ -136,6 +131,11 @@ public class Player : DamageableBase
 		return (target.position - transform.position).normalized * Stats.Knockback;
 	}
 
+	public void OnSpawn()
+	{
+		Health = Stats.MaxHealth;
+	}
+
 	public void Punch(Collider2D collision)
 	{
 		IDamageable damageable = collision.FindComponent<IDamageable>();
@@ -172,11 +172,11 @@ public class Player : DamageableBase
 	{
 		base.Damage(damage, damageSource, knockback);
 
-		Rigidbody.AddForce(knockback);
+		Rigidbody.AddForce(knockback, ForceMode2D.Impulse);
 	}
 
 	public override void Die()
 	{
-
+		Aphrodite.Instance.DespawnPlayer(this);
 	}
 }
