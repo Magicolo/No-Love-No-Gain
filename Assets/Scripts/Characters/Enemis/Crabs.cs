@@ -12,6 +12,7 @@ public class Crabs : DamageableBase
 
 	public enum CrabBehaviors { AttackPlayer, AttackPopulation, AttackBuilding, AimlessWalks }
 	public CrabBehaviors CrabBehavior;
+	public float MaxHealth = 25f;
 
 	[Disable]
 	public GameObject CrabTarget;
@@ -43,12 +44,13 @@ public class Crabs : DamageableBase
 	{
 		base.Damage(damage, damageSource, knockback);
 
-		Body.AddForce(knockback);
+		Body.AddForce(knockback, ForceMode2D.Impulse);
 		CrabTarget = null;
 	}
 
 	void Start()
 	{
+		Health = MaxHealth;
 		Pinces = GetComponentsInChildren<CrabPince>();
 		Animator = GetComponent<Animator>();
 		Body = GetComponent<Rigidbody2D>();

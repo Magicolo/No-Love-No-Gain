@@ -19,7 +19,7 @@ public abstract class Singleton<T> : MonoBehaviourExtended where T : Singleton<T
 
 	protected virtual void Awake()
 	{
-		if (_instance = null)
+		if (_instance == null)
 			_instance = this as T;
 	}
 }

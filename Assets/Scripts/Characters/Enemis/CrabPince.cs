@@ -76,7 +76,7 @@ public class CrabPince : MonoBehaviour
 	{
 		if (state == CrabPinceState.Attacking)
 		{
-			IDamageable damagable = other.GetComponent<IDamageable>();
+			IDamageable damagable = other.FindComponent<IDamageable>();
 
 			if (damagable != null)
 			{
