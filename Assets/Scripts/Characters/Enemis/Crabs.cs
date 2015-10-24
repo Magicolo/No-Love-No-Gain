@@ -56,7 +56,7 @@ public class Crabs : DamageableBaseBase
 
 	private void CheckTargetIsActiveOrGetClosest<T>() where T : MonoBehaviour
 	{
-		if (CrabTarget && CrabTarget.gameObject.activeSelf)
+		if (CrabTarget && !CrabTarget.activeSelf)
 			CrabTarget = null;
 
 		if (CrabTarget == null)
@@ -103,6 +103,6 @@ public class Crabs : DamageableBaseBase
 
 	void FixedUpdate()
 	{
-		Body.AccelerateTowards(targetMovement, 100, Kronos.Enemy.DeltaTime);
+		Body.AccelerateTowards(targetMovement, 100, Kronos.Enemy.DeltaTime, axes: Axes.X);
 	}
 }
