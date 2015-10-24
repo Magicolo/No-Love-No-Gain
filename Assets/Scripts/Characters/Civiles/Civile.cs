@@ -56,7 +56,7 @@ public class Civile : DamageableBaseBase, IPoolable, ICopyable<Civile>
 
 	void FixedUpdate()
 	{
-		body.AccelerateTowards(new Vector2(this.MovementSpeed * transform.forward.z, 0), 100, Kronos.World.DeltaTime);
+		body.AccelerateTowards(new Vector2(this.MovementSpeed * transform.forward.z, 0), 100, Kronos.World.DeltaTime, axes: Axes.X);
 	}
 
 	void Update()
