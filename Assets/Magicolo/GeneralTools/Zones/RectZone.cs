@@ -9,20 +9,20 @@ using Magicolo.GeneralTools;
 namespace Magicolo
 {
 	[AddComponentMenu("Magicolo/General/Zones/Rect Zone")]
-	public class RectZone : MonoBehaviourExtended
+	public class RectZone : Zone2DBase
 	{
 		[SerializeField]
 		Rect _rect = new Rect(0f, 0f, 1f, 1f);
 		[SerializeField]
 		bool _draw = true;
 
-		public Rect LocalRect { get { return new Rect(_rect.center, _rect.size); } }
+		public Rect LocalRect { get { return new Rect(_rect.position - _rect.size / 2f, _rect.size); } set { _rect = new Rect(value.center, value.size); } }
 		public Rect WorldRect
 		{
 			get
 			{
 				Rect rect = LocalRect;
-				rect.center += transform.position.ToVector2();
+				rect.position += transform.position.ToVector2();
 				return rect;
 			}
 		}
@@ -38,6 +38,16 @@ namespace Magicolo
 			Gizmos.DrawWireCube(position, size);
 			Gizmos.color = new Color(1f, 0f, 0f, 0.15f);
 			Gizmos.DrawCube(position, size);
+		}
+
+		public override Vector2 GetRandomLocalPoint()
+		{
+			return LocalRect.GetRandomPoint();
+		}
+
+		public override Vector2 GetRandomWorldPoint()
+		{
+			return WorldRect.GetRandomPoint();
 		}
 	}
 }

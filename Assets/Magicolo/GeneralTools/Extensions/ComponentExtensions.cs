@@ -232,26 +232,28 @@ namespace Magicolo
 		public static void RemoveComponent<T>(this Component component) where T : Component
 		{
 			T toRemove = component.GetComponent<T>();
+
 			if (toRemove != null)
-			{
 				toRemove.Destroy();
-			}
 		}
 
 		public static T GetClosest<T>(this Component source, IList<T> targets) where T : Component
 		{
-			float closestDistance = 1000000;
-			T closestTarget = default(T);
+			float closestDistance = float.MaxValue;
+			T closestTarget = null;
 
-			foreach (T target in targets)
+			for (int i = 0; i < targets.Count; i++)
 			{
+				T target = targets[i];
 				float distance = Vector3.Distance(source.transform.position, target.transform.position);
+
 				if (distance < closestDistance)
 				{
 					closestTarget = target;
 					closestDistance = distance;
 				}
 			}
+
 			return closestTarget;
 		}
 
@@ -260,9 +262,8 @@ namespace Magicolo
 			T[] componentArray = new T[components.Count];
 
 			for (int i = 0; i < components.Count; i++)
-			{
 				componentArray[i] = components[i].GetComponent<T>();
-			}
+
 			return componentArray;
 		}
 	}
