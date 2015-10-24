@@ -26,6 +26,10 @@ public class Crabs : DamageableBaseBase
 
 	public float MouvementSpeed = 2;
 
+	public SingleRayCast GroundRayCast;
+	[Disable]
+	public GameObject ForwardGroundGameObject;
+
 	public override void Die()
 	{
 		this.Destroy();
@@ -45,6 +49,7 @@ public class Crabs : DamageableBaseBase
 
 	void Update()
 	{
+		ForwardGroundGameObject = GroundRayCast.getHitGameObject(transform.position);
 		switch (CrabBehavior)
 		{
 			case CrabBehaviors.AimlessWalks: AimlessWalk(); break;
@@ -53,6 +58,57 @@ public class Crabs : DamageableBaseBase
 			case CrabBehaviors.AttackPopulation: AttackPopulation(); break;
 		}
 	}
+
+	private void AttackPopulation()
+	{
+		CheckTargetIsActiveOrGetClosest<Civile>();
+		SetTargetMovement(CrabTarget.transform.position);
+	}
+
+
+
+	private void AttackPlayer()
+	{
+		CheckTargetIsActiveOrGetClosest<Player>();
+		SetTargetMovement(CrabTarget.transform.position);
+	}
+
+	private void AttackBuilding()
+	{
+		CheckTargetIsActiveOrGetClosest<Building>();
+
+		if (CrabTarget)
+		{
+			BuildingBase topBuildingBase = CrabTarget.GetComponentsInChildren<BuildingBase>().Last();
+
+			Vector3 targetMovementForBuilding = topBuildingBase.transform.position.SetValues(transform.position.y, Axes.Y);
+			float distanceToBuilding = transform.position.y - topBuildingBase.transform.position.y;
+			bool isInTheWidthOfBuilding = transform.position.x.IsBetween(topBuildingBase.BoxCollider.GetTopLeftCorner().x, topBuildingBase.BoxCollider.GetTopRightCorner().x);
+
+			if (distanceToBuilding >= 0.4)
+			{
+				if (!isInTheWidthOfBuilding)
+					SetTargetMovement(targetMovementForBuilding);
+			}
+			else
+			{
+				if (!isInTheWidthOfBuilding && Body.velocity.y <= 0)
+					this.CrabBehavior = CrabBehaviors.AimlessWalks;
+				else
+					SetTargetMovement(targetMovementForBuilding);
+			}
+		}
+		else
+		{
+			targetMovement = Vector2.zero;
+		}
+	}
+
+	private void AimlessWalk()
+	{
+
+	}
+
 
 	private void CheckTargetIsActiveOrGetClosest<T>() where T : MonoBehaviour
 	{
@@ -69,12 +125,12 @@ public class Crabs : DamageableBaseBase
 		}
 	}
 
-	private void AttackPopulation()
+
+	private void SetTargetMovement(Vector3 target)
 	{
-		CheckTargetIsActiveOrGetClosest<Civile>();
 		if (CrabTarget)
 		{
-			targetMovement = MouvementSpeed * (CrabTarget.transform.position - transform.position).normalized;
+			targetMovement = MouvementSpeed * (target - transform.position).normalized;
 			targetMovement = targetMovement.SetValues(0, Axes.Y);
 		}
 		else
@@ -83,26 +139,14 @@ public class Crabs : DamageableBaseBase
 		}
 	}
 
-	private void AttackPlayer()
-	{
-		if (CrabTarget == null)
-		{
-			CrabTarget = transform.GetClosest<Player>(Object.FindObjectsOfType<Player>()).gameObject;
-		}
-	}
-
-	private void AttackBuilding()
-	{
-
-	}
-
-	private void AimlessWalk()
-	{
-
-	}
 
 	void FixedUpdate()
 	{
 		Body.AccelerateTowards(targetMovement, 100, Kronos.Enemy.DeltaTime, axes: Axes.X);
+	}
+
+	void OnDrawGizmos()
+	{
+		GroundRayCast.DrawGizmos();
 	}
 }
