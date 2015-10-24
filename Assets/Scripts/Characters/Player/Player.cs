@@ -194,4 +194,9 @@ public class Player : DamageableBase
 	{
 
 	}
+
+	public override void OnDamaged()
+	{
+		Debug.Log("I LOVE YOU!");
+	}
 }

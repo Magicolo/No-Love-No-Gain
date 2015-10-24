@@ -5,9 +5,10 @@ using System;
 
 public abstract class DamageableBase : MonoBehaviour, IDamageable
 {
+
 	public float Health { get; set; }
 
-	protected virtual void OnDamaged() { }
+	public abstract void OnDamaged();
 
 	public abstract void Die();
 
