@@ -54,24 +54,28 @@ public class Crabs : DamageableBaseBase
 		}
 	}
 
-	private void AttackPopulation()
+	private void CheckTargetIsActiveOrGetClosest<T>() where T : MonoBehaviour
 	{
 		if (CrabTarget && CrabTarget.gameObject.activeSelf)
-		{
 			CrabTarget = null;
-		}
+
 		if (CrabTarget == null)
 		{
-			Civile civile = transform.GetClosest<Civile>(Object.FindObjectsOfType<Civile>());
-			if (civile)
+			T thing = transform.GetClosest<T>(Object.FindObjectsOfType<T>());
+			if (thing)
 			{
-				CrabTarget = civile.gameObject;
+				CrabTarget = thing.gameObject;
 			}
 		}
+	}
+
+	private void AttackPopulation()
+	{
+		CheckTargetIsActiveOrGetClosest<Civile>();
 		if (CrabTarget)
 		{
 			targetMovement = MouvementSpeed * (CrabTarget.transform.position - transform.position).normalized;
-			targetMovement.SetValues(0, Axes.Y);
+			targetMovement = targetMovement.SetValues(0, Axes.Y);
 		}
 	}
 
