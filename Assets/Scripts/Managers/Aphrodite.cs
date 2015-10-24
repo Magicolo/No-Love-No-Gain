@@ -48,9 +48,11 @@ public class Aphrodite : Singleton<Aphrodite>
 		player.transform.position = transform.position;
 
 		_playerCount++;
+
+		player.OnSpawn();
 	}
 
-	void DespawnPlayer(Player player)
+	public void DespawnPlayer(Player player)
 	{
 		player.gameObject.SetActive(false);
 		player.transform.parent = transform;

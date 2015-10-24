@@ -12,6 +12,7 @@ public class Crabs : DamageableBase
 
 	public enum CrabBehaviors { AttackPlayer, AttackPopulation, AttackBuilding, AimlessWalks }
 	public CrabBehaviors CrabBehavior;
+	public float MaxHealth = 25f;
 
 	[Disable]
 	public GameObject CrabTarget;
@@ -32,6 +33,8 @@ public class Crabs : DamageableBase
 	[Disable]
 	public GameObject ForwardGroundGameObject;
 
+	int _isMovingHash = Animator.StringToHash("IsMoving");
+
 	public override void Die()
 	{
 		gameObject.Destroy();
@@ -41,15 +44,17 @@ public class Crabs : DamageableBase
 	{
 		base.Damage(damage, damageSource, knockback);
 
-		Body.AddForce(knockback);
+		Body.AddForce(knockback, ForceMode2D.Impulse);
 		CrabTarget = null;
 	}
 
 	void Start()
 	{
+		Health = MaxHealth;
 		Pinces = GetComponentsInChildren<CrabPince>();
 		Animator = GetComponent<Animator>();
 		Body = GetComponent<Rigidbody2D>();
+		Animator.SetBool(_isMovingHash, true);
 	}
 
 	void Update()
@@ -67,20 +72,24 @@ public class Crabs : DamageableBase
 	private void AttackPopulation()
 	{
 		CheckTargetIsActiveOrGetClosest<Civile>();
-		SetTargetMovement(CrabTarget.transform.position);
+
+		if (CrabTarget != null)
+			SetTargetMovement(CrabTarget.transform.position);
 	}
 
 	private void AttackPlayer()
 	{
 		CheckTargetIsActiveOrGetClosest<Player>();
-		SetTargetMovement(CrabTarget.transform.position);
+
+		if (CrabTarget != null)
+			SetTargetMovement(CrabTarget.transform.position);
 	}
 
 	private void AttackBuilding()
 	{
 		CheckTargetIsActiveOrGetClosest<Building>();
 
-		if (CrabTarget)
+		if (CrabTarget != null)
 		{
 			BuildingBase topBuildingBase = CrabTarget.GetComponentsInChildren<BuildingBase>().Last();
 

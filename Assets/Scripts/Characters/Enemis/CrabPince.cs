@@ -4,6 +4,8 @@ using Magicolo;
 
 public class CrabPince : MonoBehaviour
 {
+	public Crabs Crab;
+	public string AnimationBool;
 	[Disable]
 	public float Timer;
 
@@ -13,18 +15,18 @@ public class CrabPince : MonoBehaviour
 	public float AttackTime;
 	public float AttackDamage;
 
-	SpriteRenderer Sprite;
-	//Animator Animator;
-
 	public enum CrabPinceState { CoolDown, Attacking };
 	public CrabPinceState state;
 
+	int _animationHash;
 
+	void Awake()
+	{
+		_animationHash = Animator.StringToHash(AnimationBool);
+	}
 
 	void Start()
 	{
-		this.Sprite = GetComponent<SpriteRenderer>();
-		//this.Animator = transform.parent.GetComponent<Animator>();
 		GoInCoolDown();
 	}
 
@@ -36,8 +38,9 @@ public class CrabPince : MonoBehaviour
 		{
 			case CrabPinceState.CoolDown: CooDown(); break;
 			case CrabPinceState.Attacking: Attack(); break;
-
 		}
+
+		Crab.Animator.SetBool(_animationHash, state == CrabPinceState.Attacking);
 	}
 
 	private void Attack()
@@ -59,7 +62,6 @@ public class CrabPince : MonoBehaviour
 	private void GoInCoolDown()
 	{
 		Timer = Random.Range(MinCoolDown, MaxCoolDown);
-		this.Sprite.enabled = false;
 		state = CrabPinceState.CoolDown;
 	}
 
@@ -67,7 +69,6 @@ public class CrabPince : MonoBehaviour
 	private void PrepareAttack()
 	{
 		Timer = AttackTime;
-		this.Sprite.enabled = true;
 		state = CrabPinceState.Attacking;
 	}
 
@@ -75,7 +76,7 @@ public class CrabPince : MonoBehaviour
 	{
 		if (state == CrabPinceState.Attacking)
 		{
-			IDamageable damagable = other.GetComponent<IDamageable>();
+			IDamageable damagable = other.FindComponent<IDamageable>();
 
 			if (damagable != null)
 			{
