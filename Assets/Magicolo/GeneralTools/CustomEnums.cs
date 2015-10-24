@@ -63,6 +63,12 @@ namespace Magicolo
 		Linear
 	}
 
+	public enum ProbabilityDistributions
+	{
+		Uniform,
+		Normal
+	}
+
 	public enum ControllerTypes
 	{
 		Keyboard,
