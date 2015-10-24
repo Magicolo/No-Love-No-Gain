@@ -54,5 +54,30 @@ namespace Magicolo
 
 			return new Rect();
 		}
+
+		public static Vector2 TopLeft(this Rect rect)
+		{
+			return new Vector2(rect.xMin, rect.yMin);
+		}
+
+		public static Vector2 TopRight(this Rect rect)
+		{
+			return new Vector2(rect.xMax, rect.yMin);
+		}
+
+		public static Vector2 BottomLeft(this Rect rect)
+		{
+			return new Vector2(rect.xMin, rect.yMax);
+		}
+
+		public static Vector2 BottomRight(this Rect rect)
+		{
+			return new Vector2(rect.xMax, rect.yMin);
+		}
+
+		public static Vector2 GetRandomPoint(this Rect rect)
+		{
+			return new Vector2(UnityEngine.Random.Range(rect.xMin, rect.xMax), UnityEngine.Random.Range(rect.yMin, rect.yMax));
+		}
 	}
 }
