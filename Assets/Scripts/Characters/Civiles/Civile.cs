@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using Magicolo;
 using Rick;
@@ -34,6 +34,8 @@ public class Civile : DamageableBase, IPoolable, ICopyable<Civile>
 		MovementSpeed = reference.MovementSpeed;
 		MovementSpeedMin = reference.MovementSpeedMin;
 		MovementSpeedMax = reference.MovementSpeedMax;
+		FlipWhenSeeing = reference.FlipWhenSeeing;
+		GroundRayCast = reference.GroundRayCast;
 	}
 
 	public void OnCreate()
