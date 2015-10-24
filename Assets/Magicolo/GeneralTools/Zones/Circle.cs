@@ -24,6 +24,13 @@ namespace Magicolo
 		public float Radius { get { return _radius; } set { _radius = value; } }
 		public Vector2 Position { get { return new Vector2(_x, _y); } set { _x = value.x; _y = value.y; } }
 
+		public Circle(float x, float y, float radius)
+		{
+			_x = x;
+			_y = y;
+			_radius = radius;
+		}
+
 		public Circle(Vector2 position, float radius)
 		{
 			_x = position.x;
@@ -51,6 +58,11 @@ namespace Magicolo
 		public bool Intersects(Circle circle)
 		{
 			return Vector2.Distance(Position, circle.Position) <= _radius + circle._radius;
+		}
+
+		public override string ToString()
+		{
+			return string.Format("Circle({0}, {1}, {2})", _x, _y, _radius);
 		}
 	}
 }

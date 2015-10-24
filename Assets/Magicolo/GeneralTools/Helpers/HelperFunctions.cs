@@ -13,7 +13,7 @@ namespace Magicolo
 			get
 			{
 				if (_randomGenerator == null)
-					_randomGenerator = new System.Random(System.DateTime.Now.Millisecond * System.DateTime.Now.Second * System.DateTime.Now.Minute);
+					_randomGenerator = new System.Random(System.Environment.TickCount);
 
 				return _randomGenerator;
 			}

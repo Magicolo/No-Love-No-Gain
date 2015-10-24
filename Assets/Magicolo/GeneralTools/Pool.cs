@@ -138,9 +138,11 @@ namespace Magicolo
 	{
 		public static event Action<T> OnCreate;
 		public static event Action<T> OnRecycle;
+		public static int TickDelay = 2;
 		public static Transform Transform { get { return _transform; } }
 
 		static readonly Queue<T> _pool = new Queue<T>(4);
+		static readonly Queue<int> _timeStamps = new Queue<int>(4);
 
 		static Transform _transform;
 		static bool _isCopyable;
@@ -200,6 +202,7 @@ namespace Magicolo
 
 			RaiseOnRecycleEvent(item);
 			_pool.Enqueue(item);
+			_timeStamps.Enqueue(Time.frameCount);
 		}
 
 		public static void Recycle(ref T item, Action<T> onPostRecycle = null)
@@ -242,7 +245,7 @@ namespace Magicolo
 
 			while (item == null)
 			{
-				if (_pool.Count > 0)
+				if (_pool.Count > 0 && Time.frameCount - _timeStamps.Peek() > TickDelay)
 					item = _pool.Dequeue();
 				else
 				{
